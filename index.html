@@ -17,62 +17,39 @@
             --gold: #ffcc00;
         }
         
-        body { 
-            background: var(--bg); 
-            color: var(--text); 
-            font-family: 'Outfit', sans-serif; 
-            margin: 0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            overflow: hidden; 
-        }
-
-        .card { 
-            background: var(--card); 
-            border-radius: 30px; 
-            padding: 25px; 
-            width: 90%; 
-            max-width: 450px; 
-            text-align: center; 
-            border: 4px solid var(--accent); 
-            box-shadow: 0 0 30px rgba(255, 204, 0, 0.2); 
-            max-height: 92vh; 
-            overflow-y: auto; 
-            position: relative;
-        }
+        body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
+        .card { background: var(--card); border-radius: 30px; padding: 25px; width: 90%; max-width: 450px; text-align: center; border: 4px solid var(--accent); box-shadow: 0 0 30px rgba(255, 204, 0, 0.2); max-height: 92vh; overflow-y: auto; position: relative; }
         
-        /* FX ANIMATIONS */
-        @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.6); } 70% { box-shadow: 0 0 0 20px rgba(255, 204, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0); } }
-        @keyframes flash-correct { 0% { background: rgba(255, 204, 0, 0); } 50% { background: rgba(255, 204, 0, 0.15); } 100% { background: rgba(255, 204, 0, 0); } }
-        @keyframes pizza-drop { 0% { transform: scale(4) translateY(-200px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
-        
-        .correct-fx { animation: flash-correct 0.5s ease; }
+        /* FX & VIEWS */
         .view { display: none; flex-direction: column; gap: 15px; }
         .active { display: flex; animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .correct-fx { animation: flash 0.5s ease; }
+        @keyframes flash { 0% { background: rgba(255, 204, 0, 0); } 50% { background: rgba(255, 204, 0, 0.15); } 100% { background: rgba(255, 204, 0, 0); } }
 
         .logo { font-family: 'Bungee'; color: var(--accent); font-size: 2.2rem; margin: 0; text-shadow: 2px 2px 0px #000; }
         button { padding: 15px; border-radius: 15px; border: none; font-family: 'Bungee'; cursor: pointer; transition: 0.2s; font-size: 0.85rem; }
         .btn-main { background: var(--accent); color: #2d0a0a; width: 100%; box-shadow: 0 4px 0 #b38f00; }
-        .btn-main:active { transform: translateY(3px); box-shadow: none; }
         .btn-sec { background: rgba(255, 255, 255, 0.1); border: 1px solid var(--accent); color: white; width: 100%; }
+        .btn-del { background: none; border: none; color: var(--red); font-size: 1.2rem; cursor: pointer; font-weight: bold; padding: 0 10px; }
         .btn-exit { background: var(--red); color: white; width: 60%; align-self: center; margin-top: 10px; }
 
-        /* INDIVIDUAL STATUS (Student View) */
-        #personal-status { height: 160px; display: flex; align-items: center; justify-content: center; position: relative; }
-        .sun { background: radial-gradient(circle, #fff, var(--gold), #ff8800); border-radius: 50%; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .sun.glow { animation: pulse-gold 1.5s infinite; }
+        /* LISTS */
+        .item-row { display: flex; align-items: center; gap: 5px; margin-bottom: 8px; }
+        #questions-list { max-height: 150px; overflow-y: auto; text-align: left; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.1); }
+        .q-item { border-bottom: 1px solid #666; padding: 5px 0; display: flex; justify-content: space-between; }
+
+        /* GAME VISUALS */
+        #personal-status { height: 160px; display: flex; align-items: center; justify-content: center; }
+        .sun { background: radial-gradient(circle, #fff, var(--gold), #ff8800); border-radius: 50%; transition: 0.5s; }
         .bat-shell { width: 45px; height: 110px; border: 3px solid #fff; border-radius: 10px; position: relative; overflow: hidden; }
-        .bat-fill { background: var(--accent); width: 100%; position: absolute; bottom: 0; transition: height 0.7s ease-out; }
-        .pizza-plate { width: 120px; height: 120px; background: #f3e5ab; border: 6px solid #d2691e; border-radius: 50%; position: relative; box-shadow: inset 0 0 15px rgba(0,0,0,0.2); }
-        .topping { position: absolute; font-size: 24px; animation: pizza-drop 0.4s ease-out; }
+        .bat-fill { background: var(--accent); width: 100%; position: absolute; bottom: 0; transition: height 0.7s; }
+        .pizza-plate { width: 120px; height: 120px; background: #f3e5ab; border: 6px solid #d2691e; border-radius: 50%; position: relative; }
+        .topping { position: absolute; font-size: 24px; }
 
         .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        input { padding: 12px; border-radius: 10px; border: 2px solid var(--accent); background: #000; color: #fff; text-align: center; }
+        input, select { padding: 12px; border-radius: 10px; border: 2px solid var(--accent); background: #000; color: #fff; text-align: center; }
         .leaderboard { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.75rem; text-align: left; }
-        #host-grid { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0; justify-content: center; }
     </style>
 </head>
 <body>
@@ -86,6 +63,7 @@
         </div>
 
         <div id="view-lib" class="view">
+            <h3 style="margin:0">FOLDERS</h3>
             <div id="topics"></div>
             <button class="btn-main" onclick="addTopic()">+ CREATE FOLDER</button>
             <button class="btn-sec" onclick="showView('view-home')">BACK</button>
@@ -93,14 +71,14 @@
 
         <div id="view-edit" class="view">
             <h3 id="edit-title" style="color:var(--accent); margin:0;">EDITOR</h3>
-            <div id="questions-list" style="max-height: 120px; overflow-y: auto; text-align: left; background: rgba(0,0,0,0.3); padding: 10px; border-radius:10px; font-size: 0.8rem;"></div>
+            <div id="questions-list"></div>
             <button class="btn-sec" onclick="addHybridQuestion()">+ ADD QUESTION</button>
-            <select id="game-select" style="padding:12px; border-radius:10px; background:#000; color:#fff; border:1px solid var(--accent);">
+            <select id="game-select">
                 <option value="forge">☀️ SOLAR FORGE</option>
                 <option value="battery">🔋 POWER CELL</option>
                 <option value="pizza">🍕 PIZZA PARTY</option>
             </select>
-            <input type="number" id="room-code" placeholder="ENTER ROOM CODE">
+            <input type="number" id="room-code" placeholder="ROOM CODE">
             <button class="btn-main" onclick="hostGame()">LAUNCH ARENA</button>
             <button class="btn-sec" onclick="showView('view-lib')">BACK</button>
         </div>
@@ -126,20 +104,20 @@
             </div>
 
             <div id="teacher-results" style="display:none;">
-                <h4 style="margin:0; color:var(--accent);">LIVE DATA</h4>
-                <div id="host-grid"></div>
+                <h4 style="margin:0; color:var(--accent);">RESEARCH DATA</h4>
+                <div id="host-grid" style="display:flex; flex-wrap:wrap; gap:5px; margin:10px 0; justify-content:center;"></div>
                 <table class="leaderboard"><tbody id="leaderboard-body"></tbody></table>
                 <button class="btn-exit" onclick="location.reload()">END SESSION</button>
             </div>
 
             <button id="start-btn" class="btn-main" style="display:none;" onclick="teacherStart()">START CLASS</button>
-            <p id="wait-msg" style="display:none; color:var(--accent);">Handshaking with teacher...</p>
+            <p id="wait-msg" style="display:none; color:var(--accent);">Connecting...</p>
         </div>
     </div>
 
     <script>
         let peer, conn, myRole, currentTopic, roomCode, selectedMode;
-        let db = JSON.parse(localStorage.getItem('quiriosity_classic_v1')) || {}; 
+        let db = JSON.parse(localStorage.getItem('quiriosity_final_v5')) || {}; 
         let players = {}; 
         let playerCorrectCount = {};
         const toppings = ['🍕','🍄','🫑','🧅','🥓','🍍','🌶️','🧀'];
@@ -150,32 +128,45 @@
             if(id === 'view-lib') renderLib();
         }
 
-        /* DATA MANAGEMENT */
+        /* FOLDER & QUESTION MANAGEMENT */
         function renderLib() {
             const div = document.getElementById('topics'); div.innerHTML = '';
             Object.keys(db).forEach(t => {
-                div.innerHTML += `<div style="display:flex; gap:5px; margin-bottom:5px;"><button class="btn-sec" onclick="openTopic('${t}')" style="flex:1; text-align:left;">📂 ${t}</button></div>`;
+                div.innerHTML += `<div class="item-row">
+                    <button class="btn-sec" onclick="openTopic('${t}')" style="flex:1; text-align:left;">📂 ${t}</button>
+                    <button class="btn-del" onclick="deleteTopic('${t}')">✕</button>
+                </div>`;
             });
         }
         function addTopic() { let n = prompt("Folder Name?"); if(n){ db[n]=[]; save(); renderLib(); }}
+        function deleteTopic(t) { if(confirm(`Delete "${t}" and all its questions?`)){ delete db[t]; save(); renderLib(); }}
         function openTopic(t) { currentTopic = t; document.getElementById('edit-title').innerText = t; renderQuestions(); showView('view-edit'); }
+        
         function renderQuestions() {
             const div = document.getElementById('questions-list'); div.innerHTML = '';
-            db[currentTopic].forEach(q => { div.innerHTML += `<div style="padding:4px; border-bottom:1px solid #666;">${q.q}</div>`; });
+            db[currentTopic].forEach((q, i) => { 
+                div.innerHTML += `<div class="q-item">
+                    <span>${i+1}. ${q.q}</span>
+                    <button onclick="deleteQuestion(${i})" style="background:none; border:none; color:var(--red); cursor:pointer;">✕</button>
+                </div>`; 
+            });
         }
+        function deleteQuestion(index) { db[currentTopic].splice(index, 1); save(); renderQuestions(); }
+        
         function addHybridQuestion() {
-            let q = prompt("Question:"), a = prompt("Answer:"), w = prompt("Wrong options (comma separated):");
+            let q = prompt("Question:"), a = prompt("Answer:"), w = prompt("Wrong options (comma separated for multiple choice) otherwise leave blank:");
             if(q && a){
                 let opts = w ? w.split(',').concat(a).sort(() => Math.random() - 0.5) : [];
                 db[currentTopic].push({q, a, options: opts}); save(); renderQuestions();
             }
         }
-        function save() { localStorage.setItem('quiriosity_classic_v1', JSON.stringify(db)); }
+        function save() { localStorage.setItem('quiriosity_final_v5', JSON.stringify(db)); }
 
         /* HOST LOGIC */
         function hostGame() {
             roomCode = document.getElementById('room-code').value;
             selectedMode = document.getElementById('game-select').value;
+            if(!roomCode) return alert("Enter code!");
             peer = new Peer('q-' + roomCode);
             peer.on('open', () => { myRole='host'; showView('view-arena'); document.getElementById('start-btn').style.display='block'; });
             peer.on('connection', c => {
@@ -205,6 +196,7 @@
         /* STUDENT LOGIC */
         function joinGame() {
             let n = document.getElementById('stu-name').value, c = document.getElementById('join-code').value;
+            if(!n || !c) return alert("Fill all!");
             peer = new Peer();
             peer.on('open', () => {
                 conn = peer.connect('q-' + c);
@@ -224,7 +216,7 @@
             if(score === undefined) score = 0;
             if(mode === 'forge') {
                 let s = 60 + (score * 15);
-                box.innerHTML = `<div class="sun ${score>0?'glow':''}" style="width:${s}px; height:${s}px; box-shadow: 0 0 ${score*15}px var(--gold);"></div>`;
+                box.innerHTML = `<div class="sun" style="width:${s}px; height:${s}px; box-shadow: 0 0 ${score*15}px var(--gold);"></div>`;
             } else if(mode === 'battery') {
                 box.innerHTML = `<div class="bat-shell"><div class="bat-fill" style="height:${Math.min(score*10, 100)}%;"></div></div>`;
             } else {
