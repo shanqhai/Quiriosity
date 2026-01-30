@@ -178,7 +178,7 @@
             db[currentTopic].forEach(q => { div.innerHTML += `<div style="font-size:0.75rem; border-bottom:1px solid #666; padding:5px;">${q.q}</div>`; });
         }
         function addHybridQuestion() {
-            let q = prompt("Question:"), a = prompt("Correct Answer:"), w = prompt("Wrong options (comma separated):");
+            let q = prompt("Question:"), a = prompt("Correct Answer:"), w = prompt("Wrong options (comma separated for multiple choice) or leave blank:");
             if(q && a){
                 let opts = w ? w.split(',').concat(a).sort(() => Math.random() - 0.5) : [];
                 db[currentTopic].push({q, a, options: opts}); 
