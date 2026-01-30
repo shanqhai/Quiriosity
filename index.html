@@ -7,49 +7,82 @@
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;900&family=Bungee&display=swap');
-        :root { --bg: #0a0a12; --card: #161625; --accent: #00f2fe; --red: #ff0055; --gold: #ffcc00; --green: #00ff88; }
         
-        body { background: var(--bg); color: #fff; font-family: 'Outfit', sans-serif; margin: 0; overflow: hidden; height: 100vh; display: flex; justify-content: center; align-items: center; }
-        .card { background: var(--card); border-radius: 30px; padding: 25px; width: 90%; max-width: 450px; text-align: center; border: 1px solid rgba(0,242,254,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; z-index: 10; max-height: 90vh; overflow-y: auto; }
+        :root { 
+            --bg: #2d0a0a; 
+            --card: #4a0e0e; 
+            --accent: #ffcc00; 
+            --red: #ff4757; 
+            --text: #ffffff; 
+            --gold: #ffcc00;
+        }
+        
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: 'Outfit', sans-serif; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            overflow: hidden; 
+        }
+
+        .card { 
+            background: var(--card); 
+            border-radius: 30px; 
+            padding: 25px; 
+            width: 90%; 
+            max-width: 450px; 
+            text-align: center; 
+            border: 4px solid var(--accent); 
+            box-shadow: 0 0 30px rgba(255, 204, 0, 0.2); 
+            max-height: 92vh; 
+            overflow-y: auto; 
+            position: relative;
+        }
         
         /* FX ANIMATIONS */
         @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.6); } 70% { box-shadow: 0 0 0 20px rgba(255, 204, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0); } }
-        @keyframes flash-green { 0% { background: rgba(0,255,136,0); } 50% { background: rgba(0,255,136,0.15); } 100% { background: rgba(0,255,136,0); } }
+        @keyframes flash-correct { 0% { background: rgba(255, 204, 0, 0); } 50% { background: rgba(255, 204, 0, 0.15); } 100% { background: rgba(255, 204, 0, 0); } }
         @keyframes pizza-drop { 0% { transform: scale(4) translateY(-200px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
         
-        .correct-flash { animation: flash-green 0.5s ease; }
+        .correct-fx { animation: flash-correct 0.5s ease; }
         .view { display: none; flex-direction: column; gap: 15px; }
-        .active { display: flex; animation: viewIn 0.4s ease-out; }
-        @keyframes viewIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .active { display: flex; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-        .logo { font-family: 'Bungee'; color: var(--accent); font-size: 2.2rem; margin: 0; text-shadow: 0 0 15px var(--accent); }
+        .logo { font-family: 'Bungee'; color: var(--accent); font-size: 2.2rem; margin: 0; text-shadow: 2px 2px 0px #000; }
         button { padding: 15px; border-radius: 15px; border: none; font-family: 'Bungee'; cursor: pointer; transition: 0.2s; font-size: 0.85rem; }
-        .btn-main { background: var(--accent); color: #0a0a12; width: 100%; box-shadow: 0 4px 0 #0099cc; }
-        .btn-sec { background: transparent; border: 1px solid var(--accent); color: white; width: 100%; }
-        .btn-exit { background: var(--red); color: white; margin-top: 10px; width: 60%; align-self: center; font-size: 0.7rem; }
+        .btn-main { background: var(--accent); color: #2d0a0a; width: 100%; box-shadow: 0 4px 0 #b38f00; }
+        .btn-main:active { transform: translateY(3px); box-shadow: none; }
+        .btn-sec { background: rgba(255, 255, 255, 0.1); border: 1px solid var(--accent); color: white; width: 100%; }
+        .btn-exit { background: var(--red); color: white; width: 60%; align-self: center; margin-top: 10px; }
 
-        /* GAME VISUALS */
+        /* INDIVIDUAL STATUS (Student View) */
         #personal-status { height: 160px; display: flex; align-items: center; justify-content: center; position: relative; }
-        .sun { background: radial-gradient(circle, #fff, var(--gold), #ff4e00); border-radius: 50%; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .sun { background: radial-gradient(circle, #fff, var(--gold), #ff8800); border-radius: 50%; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .sun.glow { animation: pulse-gold 1.5s infinite; }
         .bat-shell { width: 45px; height: 110px; border: 3px solid #fff; border-radius: 10px; position: relative; overflow: hidden; }
-        .bat-fill { background: linear-gradient(to top, #00f2fe, #4facfe); width: 100%; position: absolute; bottom: 0; transition: height 0.7s ease-out; }
-        .pizza-plate { width: 120px; height: 120px; background: #f3e5ab; border: 6px solid #8b4513; border-radius: 50%; position: relative; box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
-        .topping { position: absolute; font-size: 24px; animation: pizza-drop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .bat-fill { background: var(--accent); width: 100%; position: absolute; bottom: 0; transition: height 0.7s ease-out; }
+        .pizza-plate { width: 120px; height: 120px; background: #f3e5ab; border: 6px solid #d2691e; border-radius: 50%; position: relative; box-shadow: inset 0 0 15px rgba(0,0,0,0.2); }
+        .topping { position: absolute; font-size: 24px; animation: pizza-drop 0.4s ease-out; }
 
         .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        input { padding: 12px; border-radius: 10px; border: 1px solid var(--accent); background: rgba(0,0,0,0.3); color: #fff; text-align: center; }
+        input { padding: 12px; border-radius: 10px; border: 2px solid var(--accent); background: #000; color: #fff; text-align: center; }
         .leaderboard { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.75rem; text-align: left; }
+        #host-grid { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0; justify-content: center; }
     </style>
 </head>
-<body id="master-body">
+<body>
 
     <div class="card" id="main-card">
         <h1 class="logo">QUIRIOSITY</h1>
         
         <div id="view-home" class="view active">
             <button class="btn-main" onclick="showView('view-stu-login')">STUDENT JOIN</button>
-            <button class="btn-sec" onclick="showView('view-lib')">TEACHER DASHBOARD</button>
+            <button class="btn-sec" onclick="showView('view-lib')" style="margin-top:10px">TEACHER DASHBOARD</button>
         </div>
 
         <div id="view-lib" class="view">
@@ -60,14 +93,14 @@
 
         <div id="view-edit" class="view">
             <h3 id="edit-title" style="color:var(--accent); margin:0;">EDITOR</h3>
-            <div id="questions-list" style="max-height: 120px; overflow-y: auto; text-align: left; background: rgba(0,0,0,0.2); padding: 10px; border-radius:10px; font-size: 0.8rem;"></div>
+            <div id="questions-list" style="max-height: 120px; overflow-y: auto; text-align: left; background: rgba(0,0,0,0.3); padding: 10px; border-radius:10px; font-size: 0.8rem;"></div>
             <button class="btn-sec" onclick="addHybridQuestion()">+ ADD QUESTION</button>
             <select id="game-select" style="padding:12px; border-radius:10px; background:#000; color:#fff; border:1px solid var(--accent);">
-                <option value="forge">☀️ SOLAR FORGE (Glow & Grow)</option>
-                <option value="battery">🔋 POWER CELL (Smooth Charge)</option>
-                <option value="pizza">🍕 PIZZA PARTY (Drop Toppings)</option>
+                <option value="forge">☀️ SOLAR FORGE</option>
+                <option value="battery">🔋 POWER CELL</option>
+                <option value="pizza">🍕 PIZZA PARTY</option>
             </select>
-            <input type="number" id="room-code" placeholder="ROOM CODE">
+            <input type="number" id="room-code" placeholder="ENTER ROOM CODE">
             <button class="btn-main" onclick="hostGame()">LAUNCH ARENA</button>
             <button class="btn-sec" onclick="showView('view-lib')">BACK</button>
         </div>
@@ -83,33 +116,33 @@
             <div id="personal-status"></div>
             
             <div id="quiz-zone" style="display:none;">
-                <p id="q-text" style="font-weight: 900; font-size: 1.1rem; margin-bottom: 15px;"></p>
+                <p id="q-text" style="font-weight: 900; font-size: 1.1rem;"></p>
                 <div id="mcq-zone" class="choice-grid"></div>
                 <div id="type-zone" style="display:none;">
-                    <input type="text" id="ans-input" placeholder="Type answer...">
+                    <input type="text" id="ans-input" placeholder="...">
                     <button class="btn-main" onclick="checkTypedAnswer()" style="margin-top:10px">SUBMIT</button>
                 </div>
-                <button class="btn-exit" onclick="location.reload()">LEAVE GAME</button>
+                <button class="btn-exit" onclick="location.reload()">EXIT</button>
             </div>
 
             <div id="teacher-results" style="display:none;">
-                <h4 style="margin:0; color:var(--accent);">RESEARCH DATA (LIVE)</h4>
-                <div id="host-grid" style="display:flex; flex-wrap:wrap; gap:5px; margin: 10px 0; font-size: 0.6rem; justify-content:center;"></div>
+                <h4 style="margin:0; color:var(--accent);">LIVE DATA</h4>
+                <div id="host-grid"></div>
                 <table class="leaderboard"><tbody id="leaderboard-body"></tbody></table>
-                <button class="btn-exit" onclick="location.reload()">CLOSE ARENA</button>
+                <button class="btn-exit" onclick="location.reload()">END SESSION</button>
             </div>
 
-            <button id="start-btn" class="btn-main" style="display:none;" onclick="teacherStart()">START ALL STUDENTS</button>
-            <p id="wait-msg" style="display:none;">Connecting to host...</p>
+            <button id="start-btn" class="btn-main" style="display:none;" onclick="teacherStart()">START CLASS</button>
+            <p id="wait-msg" style="display:none; color:var(--accent);">Handshaking with teacher...</p>
         </div>
     </div>
 
     <script>
         let peer, conn, myRole, currentTopic, roomCode, selectedMode;
-        let db = JSON.parse(localStorage.getItem('quiriosity_master_v1')) || {}; 
+        let db = JSON.parse(localStorage.getItem('quiriosity_classic_v1')) || {}; 
         let players = {}; 
         let playerCorrectCount = {};
-        const toppings = ['🍕','🍄','🫑','🧅','🥓','🍍','🌶️','🧀','🍗'];
+        const toppings = ['🍕','🍄','🫑','🧅','🥓','🍍','🌶️','🧀'];
 
         function showView(id) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -121,29 +154,25 @@
         function renderLib() {
             const div = document.getElementById('topics'); div.innerHTML = '';
             Object.keys(db).forEach(t => {
-                div.innerHTML += `<div style="display:flex; gap:5px; margin-bottom:5px;">
-                    <button class="btn-sec" onclick="openTopic('${t}')" style="flex:1; text-align:left;">📂 ${t}</button>
-                    <button onclick="deleteTopic('${t}')" style="background:none; border:none; color:var(--red); font-weight:bold; cursor:pointer;">X</button>
-                </div>`;
+                div.innerHTML += `<div style="display:flex; gap:5px; margin-bottom:5px;"><button class="btn-sec" onclick="openTopic('${t}')" style="flex:1; text-align:left;">📂 ${t}</button></div>`;
             });
         }
         function addTopic() { let n = prompt("Folder Name?"); if(n){ db[n]=[]; save(); renderLib(); }}
-        function deleteTopic(t) { if(confirm("Delete set?")){ delete db[t]; save(); renderLib(); }}
         function openTopic(t) { currentTopic = t; document.getElementById('edit-title').innerText = t; renderQuestions(); showView('view-edit'); }
         function renderQuestions() {
             const div = document.getElementById('questions-list'); div.innerHTML = '';
-            db[currentTopic].forEach(q => { div.innerHTML += `<div style="padding:4px; border-bottom:1px solid #333;">${q.q}</div>`; });
+            db[currentTopic].forEach(q => { div.innerHTML += `<div style="padding:4px; border-bottom:1px solid #666;">${q.q}</div>`; });
         }
         function addHybridQuestion() {
-            let q = prompt("Question:"), a = prompt("Answer:"), w = prompt("Wrong (comma-separated):");
+            let q = prompt("Question:"), a = prompt("Answer:"), w = prompt("Wrong options (comma separated):");
             if(q && a){
                 let opts = w ? w.split(',').concat(a).sort(() => Math.random() - 0.5) : [];
                 db[currentTopic].push({q, a, options: opts}); save(); renderQuestions();
             }
         }
-        function save() { localStorage.setItem('quiriosity_master_v1', JSON.stringify(db)); }
+        function save() { localStorage.setItem('quiriosity_classic_v1', JSON.stringify(db)); }
 
-        /* HOST (TEACHER) */
+        /* HOST LOGIC */
         function hostGame() {
             roomCode = document.getElementById('room-code').value;
             selectedMode = document.getElementById('game-select').value;
@@ -168,12 +197,12 @@
         function updateHostStats() {
             const grid = document.getElementById('host-grid'), body = document.getElementById('leaderboard-body');
             grid.innerHTML = ''; body.innerHTML = '';
-            for(let p in players) grid.innerHTML += `<span style="background:var(--accent); color:#000; padding:2px 5px; border-radius:4px;">${p}:${players[p]}</span>`;
+            for(let p in players) grid.innerHTML += `<span style="background:var(--accent); color:#000; padding:2px 5px; border-radius:4px; font-size:10px;">${p}:${players[p]}</span>`;
             let sorted = Object.keys(playerCorrectCount).sort((a,b) => playerCorrectCount[b] - playerCorrectCount[a]);
-            sorted.forEach((n, i) => body.innerHTML += `<tr><td>#${i+1}</td><td>${n}</td><td>${playerCorrectCount[n]} Cor.</td></tr>`);
+            sorted.forEach((n, i) => body.innerHTML += `<tr><td>#${i+1}</td><td>${n}</td><td>${playerCorrectCount[n]} Correct</td></tr>`);
         }
 
-        /* STUDENT */
+        /* STUDENT LOGIC */
         function joinGame() {
             let n = document.getElementById('stu-name').value, c = document.getElementById('join-code').value;
             peer = new Peer();
@@ -227,18 +256,18 @@
                         let b = document.createElement('button'); b.className='btn-main'; b.innerText=opt; b.onclick=()=>check(opt); mZone.appendChild(b);
                     });
                 } else { mZone.style.display = 'none'; tZone.style.display = 'block'; document.getElementById('ans-input').value = ''; }
-            } else { document.getElementById('quiz-zone').innerHTML = `<h2>MODULE FINISHED</h2><h1>Score: ${finalCorrect}</h1><button class="btn-main" onclick="location.reload()">MAIN MENU</button>`; }
+            } else { document.getElementById('quiz-zone').innerHTML = `<h2>MODULE FINISHED</h2><h1>Score: ${finalCorrect}</h1><button class="btn-main" onclick="location.reload()">FINISH</button>`; }
         }
         function check(val) {
             let isCorrect = val.trim().toLowerCase() == stuQs[currentQIdx].a.trim().toLowerCase();
             conn.send({type:'score', name: stuName, correct: isCorrect});
             if(isCorrect) { 
                 finalCorrect++; 
-                document.getElementById('main-card').classList.add('correct-flash'); 
-                setTimeout(()=>document.getElementById('main-card').classList.remove('correct-flash'), 500); 
+                document.getElementById('main-card').classList.add('correct-fx'); 
+                setTimeout(()=>document.getElementById('main-card').classList.remove('correct-fx'), 500); 
             } else {
-                document.getElementById('main-card').style.borderColor = "var(--red)";
-                setTimeout(()=>document.getElementById('main-card').style.borderColor = "rgba(0,242,254,0.2)", 400);
+                document.getElementById('main-card').style.borderColor = "white";
+                setTimeout(()=>document.getElementById('main-card').style.borderColor = "var(--accent)", 400);
             }
             currentQIdx++; setTimeout(nextQ, 700);
         }
@@ -247,3 +276,4 @@
     </script>
 </body>
 </html>
+
