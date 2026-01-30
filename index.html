@@ -21,7 +21,12 @@
         .btn-main { background: var(--accent); color: #2d0a0a; width: 100%; box-shadow: 0 4px 0 #b38f00; }
         .btn-sec { background: rgba(255, 255, 255, 0.1); border: 1px solid var(--accent); color: white; width: 100%; }
 
-        /* LOBBY GRID - Teacher Side */
+        /* EDITOR UI */
+        .q-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 8px 0; font-size: 0.8rem; }
+        .folder-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        .btn-del { color: var(--red); font-weight: bold; background: none; border: none; cursor: pointer; font-size: 1.1rem; }
+
+        /* LOBBY UI */
         .waiting-room { background: rgba(0,0,0,0.4); border-radius: 20px; padding: 15px; border: 1px dashed var(--accent); margin: 10px 0; }
         .grid-players { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-height: 150px; overflow-y: auto; padding: 10px; }
         .player-tag { background: var(--accent); color: #2d0a0a; padding: 5px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 900; animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -35,9 +40,8 @@
         .pizza-plate { width: 120px; height: 120px; background: #f3e5ab; border: 6px solid #d2691e; border-radius: 50%; position: relative; }
         .topping { position: absolute; font-size: 24px; }
 
-        input, select { padding: 12px; border-radius: 10px; border: 2px solid var(--accent); background: #000; color: #fff; text-align: center; }
+        input, select { padding: 12px; border-radius: 10px; border: 2px solid var(--accent); background: #000; color: #fff; text-align: center; width: calc(100% - 28px); }
         .leaderboard { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.75rem; text-align: left; }
-        .leaderboard th { color: var(--accent); border-bottom: 1px solid var(--accent); padding: 5px; }
     </style>
 </head>
 <body>
@@ -51,21 +55,22 @@
         </div>
 
         <div id="view-lib" class="view">
+            <h3 style="margin:0; color:var(--accent);">FOLDERS</h3>
             <div id="topics"></div>
-            <button class="btn-main" onclick="addTopic()">+ CREATE FOLDER</button>
+            <button class="btn-main" onclick="addTopic()">+ NEW FOLDER</button>
             <button class="btn-sec" onclick="showView('view-home')">BACK</button>
         </div>
 
         <div id="view-edit" class="view">
             <h3 id="edit-title" style="color:var(--accent); margin:0;">EDITOR</h3>
-            <div id="questions-list" style="max-height: 120px; overflow-y: auto; text-align: left; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; font-size: 0.8rem;"></div>
+            <div id="questions-list" style="max-height: 150px; overflow-y: auto; text-align: left; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px;"></div>
             <button class="btn-sec" onclick="addHybridQuestion()">+ ADD QUESTION</button>
-            <select id="game-select">
+            <select id="game-select" style="width: 100%;">
                 <option value="forge">☀️ SOLAR FORGE</option>
                 <option value="battery">🔋 POWER CELL</option>
                 <option value="pizza">🍕 PIZZA PARTY</option>
             </select>
-            <input type="number" id="room-code" placeholder="ENTER ROOM CODE">
+            <input type="number" id="room-code" placeholder="ROOM CODE">
             <button class="btn-main" onclick="hostGame()">LAUNCH ARENA</button>
             <button class="btn-sec" onclick="showView('view-lib')">BACK</button>
         </div>
@@ -83,36 +88,37 @@
             <div id="teacher-lobby" style="display:none;">
                 <p style="color:var(--accent); font-weight: 900;">WAITING ROOM</p>
                 <div class="waiting-room">
-                    <div id="player-count" style="font-size: 0.8rem; margin-bottom: 5px;">0 Students Connected</div>
+                    <div id="player-count" style="font-size: 0.8rem; margin-bottom: 5px;">0 Students</div>
                     <div id="host-lobby-grid" class="grid-players"></div>
                 </div>
                 <button id="start-btn" class="btn-main" onclick="teacherStart()">START SESSION</button>
             </div>
 
             <div id="student-lobby" style="display:none;">
-                <p style="color:var(--accent); font-weight: 900;">CONNECTED TO ARENA</p>
-                <p style="font-size: 0.8rem;">Wait for the teacher to begin...</p>
+                <p style="color:var(--accent); font-weight: 900;">CONNECTED</p>
+                <p style="font-size: 0.8rem;">Ready for teacher to start...</p>
             </div>
 
             <div id="quiz-zone" style="display:none;">
                 <p id="q-text" style="font-weight: 900; font-size: 1.1rem;"></p>
                 <div id="mcq-zone" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
+                <div id="type-zone" style="display:none; flex-direction:column; gap:10px;">
+                    <input type="text" id="ans-input" placeholder="Type here...">
+                    <button class="btn-main" onclick="checkTyped()">SUBMIT</button>
+                </div>
             </div>
 
             <div id="teacher-results" style="display:none;">
-                <h4 style="margin:0; color:var(--accent);">LEADERBOARD</h4>
-                <table class="leaderboard">
-                    <thead><tr><th>RANK</th><th>STUDENT</th><th>SCORE</th></tr></thead>
-                    <tbody id="leaderboard-body"></tbody>
-                </table>
-                <button class="btn-sec" onclick="location.reload()" style="margin-top:20px">END SESSION</button>
+                <h4 style="margin:0; color:var(--accent);">SCORES</h4>
+                <table class="leaderboard"><tbody id="leaderboard-body"></tbody></table>
+                <button class="btn-sec" onclick="location.reload()" style="margin-top:20px">CLOSE</button>
             </div>
         </div>
     </div>
 
     <script>
         let peer, conn, myRole, currentTopic, roomCode, selectedMode;
-        let db = JSON.parse(localStorage.getItem('quiriosity_v7')) || {}; 
+        let db = JSON.parse(localStorage.getItem('quiriosity_v9_final')) || {}; 
         let players = {}; 
         let playerCorrectCount = {};
         const toppings = ['🍕','🍄','🫑','🧅','🥓','🍍','🌶️','🧀'];
@@ -123,91 +129,73 @@
             if(id === 'view-lib') renderLib();
         }
 
-        /* DATA MANAGEMENT */
+        /* PERMANENT FOLDER & QUESTION TOOLS */
         function renderLib() {
             const div = document.getElementById('topics'); div.innerHTML = '';
             Object.keys(db).forEach(t => {
-                div.innerHTML += `<div style="display:flex; gap:5px; margin-bottom:8px;">
+                div.innerHTML += `<div class="folder-row">
                     <button class="btn-sec" onclick="openTopic('${t}')" style="flex:1; text-align:left;">📂 ${t}</button>
-                    <button onclick="deleteTopic('${t}')" style="background:none; border:none; color:var(--red); font-weight:bold; cursor:pointer;">✕</button>
+                    <button class="btn-del" onclick="deleteTopic('${t}')">✕</button>
                 </div>`;
             });
         }
         function addTopic() { let n = prompt("Folder Name?"); if(n){ db[n]=[]; save(); renderLib(); }}
-        function deleteTopic(t) { if(confirm("Delete this folder?")){ delete db[t]; save(); renderLib(); }}
+        function deleteTopic(t) { if(confirm(`Delete "${t}"?`)){ delete db[t]; save(); renderLib(); }}
         function openTopic(t) { currentTopic = t; document.getElementById('edit-title').innerText = t; renderQuestions(); showView('view-edit'); }
+        
         function renderQuestions() {
             const div = document.getElementById('questions-list'); div.innerHTML = '';
-            db[currentTopic].forEach(q => { div.innerHTML += `<div style="border-bottom:1px solid #666; padding:5px;">${q.q}</div>`; });
+            db[currentTopic].forEach((q, i) => { 
+                div.innerHTML += `<div class="q-row">
+                    <span>${i+1}. ${q.q}</span>
+                    <button onclick="deleteQuestion(${i})" class="btn-del">✕</button>
+                </div>`; 
+            });
         }
+        function deleteQuestion(index) { db[currentTopic].splice(index, 1); save(); renderQuestions(); }
+        
         function addHybridQuestion() {
-            let q = prompt("Question:"), a = prompt("Answer:"), w = prompt("Wrong answers (comma-separated for multiple choice) otherwise leave blank:");
+            let q = prompt("Question:"), a = prompt("Answer:"), w = prompt("Wrong options (comma separated). LEAVE BLANK for Typing mode:");
             if(q && a){
-                let opts = w ? w.split(',').concat(a).sort(() => Math.random() - 0.5) : [];
+                let opts = (w && w.trim() !== "") ? w.split(',').concat(a).sort(() => Math.random() - 0.5) : [];
                 db[currentTopic].push({q, a, options: opts}); save(); renderQuestions();
             }
         }
-        function save() { localStorage.setItem('quiriosity_v7', JSON.stringify(db)); }
+        function save() { localStorage.setItem('quiriosity_v9_final', JSON.stringify(db)); }
 
-        /* HOST (TEACHER) SIDE */
+        /* HOST & STUDENT LOGIC (RESTORED SYNC) */
         function hostGame() {
             roomCode = document.getElementById('room-code').value;
             selectedMode = document.getElementById('game-select').value;
             peer = new Peer('q-' + roomCode);
-            peer.on('open', () => { 
-                myRole='host'; 
-                showView('view-arena'); 
-                document.getElementById('teacher-lobby').style.display='block'; 
-            });
+            peer.on('open', () => { myRole='host'; showView('view-arena'); document.getElementById('teacher-lobby').style.display='block'; });
             peer.on('connection', c => {
                 c.on('data', d => {
-                    if(d.type==='join'){ 
-                        players[d.name]=0; 
-                        playerCorrectCount[d.name]=0; 
-                        updateHostLobby();
-                        sync(); 
-                    }
+                    if(d.type==='join'){ players[d.name]=0; playerCorrectCount[d.name]=0; updateHostLobby(); sync(); }
                     if(d.type==='score'){
                         if(d.correct) { players[d.name]++; playerCorrectCount[d.name]++; }
                         else players[d.name] = Math.max(0, players[d.name]-1);
-                        updateLeaderboard();
-                        sync();
+                        updateLeaderboard(); sync();
                     }
                 });
             });
         }
-
         function updateHostLobby() {
-            const grid = document.getElementById('host-lobby-grid');
-            const count = document.getElementById('player-count');
-            const pNames = Object.keys(players);
-            grid.innerHTML = '';
-            pNames.forEach(name => grid.innerHTML += `<span class="player-tag">${name}</span>`);
-            count.innerText = `${pNames.length} Students Connected`;
+            const grid = document.getElementById('host-lobby-grid'), count = document.getElementById('player-count');
+            grid.innerHTML = ''; Object.keys(players).forEach(name => grid.innerHTML += `<span class="player-tag">${name}</span>`);
+            count.innerText = `${Object.keys(players).length} Students`;
         }
-
         function teacherStart() {
-            document.getElementById('teacher-lobby').style.display='none';
-            document.getElementById('teacher-results').style.display='block';
+            document.getElementById('teacher-lobby').style.display='none'; document.getElementById('teacher-results').style.display='block';
             Object.values(peer.connections).forEach(conns => conns.forEach(c => c.send({type:'start', questions: db[currentTopic]})));
         }
-
         function updateLeaderboard() {
-            const body = document.getElementById('leaderboard-body');
-            body.innerHTML = '';
+            const body = document.getElementById('leaderboard-body'); body.innerHTML = '';
             let sorted = Object.keys(playerCorrectCount).sort((a,b) => playerCorrectCount[b] - playerCorrectCount[a]);
-            sorted.forEach((n, i) => {
-                body.innerHTML += `<tr><td>#${i+1}</td><td>${n}</td><td>${playerCorrectCount[n]}</td></tr>`;
-            });
+            sorted.forEach((n, i) => body.innerHTML += `<tr><td>#${i+1}</td><td>${n}</td><td style="color:var(--accent); text-align:right;">${playerCorrectCount[n]}</td></tr>`);
         }
+        function sync() { Object.values(peer.connections).forEach(conns => conns.forEach(c => c.send({type:'sync', players: players, mode: selectedMode}))); }
 
-        function sync() {
-            Object.values(peer.connections).forEach(conns => conns.forEach(c => 
-                c.send({type:'sync', players: players, mode: selectedMode})
-            ));
-        }
-
-        /* STUDENT SIDE */
         function joinGame() {
             let n = document.getElementById('stu-name').value, c = document.getElementById('join-code').value;
             peer = new Peer();
@@ -219,60 +207,48 @@
                     conn.send({type:'join', name: n});
                 });
                 conn.on('data', d => {
-                    if(d.type==='start') {
-                        document.getElementById('student-lobby').style.display='none';
-                        startQuiz(d.questions, n);
-                    }
+                    if(d.type==='start') { document.getElementById('student-lobby').style.display='none'; startQuiz(d.questions, n); }
                     if(d.type==='sync') updateStudentFX(d.players[n], d.mode);
                 });
             });
         }
-
         function updateStudentFX(score, mode) {
-            const box = document.getElementById('personal-status');
-            if(score === undefined) score = 0;
-            if(mode === 'forge') {
-                let s = 60 + (score * 15);
-                box.innerHTML = `<div class="sun" style="width:${s}px; height:${s}px; box-shadow: 0 0 ${score*15}px var(--accent);"></div>`;
-            } else if(mode === 'battery') {
-                box.innerHTML = `<div class="bat-shell"><div class="bat-fill" style="height:${Math.min(score*10, 100)}%;"></div></div>`;
-            } else {
+            const box = document.getElementById('personal-status'); if(score === undefined) score = 0;
+            if(mode === 'forge') { let s = 60 + (score * 15); box.innerHTML = `<div class="sun" style="width:${s}px; height:${s}px; box-shadow: 0 0 ${score*15}px var(--accent);"></div>`; }
+            else if(mode === 'battery') { box.innerHTML = `<div class="bat-shell"><div class="bat-fill" style="height:${Math.min(score*10, 100)}%;"></div></div>`; }
+            else {
                 if(!box.querySelector('.pizza-plate')) box.innerHTML = `<div class="pizza-plate"></div>`;
                 const plate = box.querySelector('.pizza-plate');
                 if(plate.children.length < score) {
                     let top = document.createElement('span'); top.className = 'topping';
                     top.innerText = toppings[Math.floor(Math.random()*toppings.length)];
-                    top.style.left = Math.random()*85 + "px"; top.style.top = Math.random()*85 + "px";
-                    plate.appendChild(top);
+                    top.style.left = Math.random()*85 + "px"; top.style.top = Math.random()*85 + "px"; plate.appendChild(top);
                 } else if (score < plate.children.length) { plate.innerHTML = ''; }
             }
         }
 
         let currentQIdx = 0, stuQs = [], stuName = "", finalCorrect = 0;
-        function startQuiz(qs, name) {
-            stuQs = qs; stuName = name; currentQIdx = 0; finalCorrect = 0;
-            document.getElementById('quiz-zone').style.display='block';
-            nextQ();
-        }
+        function startQuiz(qs, name) { stuQs = qs; stuName = name; currentQIdx = 0; finalCorrect = 0; document.getElementById('quiz-zone').style.display='block'; nextQ(); }
         function nextQ() {
+            const mZone = document.getElementById('mcq-zone'), tZone = document.getElementById('type-zone');
             if(currentQIdx < stuQs.length) {
                 document.getElementById('q-text').innerText = stuQs[currentQIdx].q;
-                const mZone = document.getElementById('mcq-zone'); mZone.innerHTML = '';
-                stuQs[currentQIdx].options.forEach(opt => {
-                    let b = document.createElement('button'); b.className='btn-main'; b.innerText=opt; b.onclick=()=>check(opt); mZone.appendChild(b);
-                });
-            } else { document.getElementById('quiz-zone').innerHTML = `<h2>DONE</h2><h1>Score: ${finalCorrect}</h1><button class="btn-main" onclick="location.reload()">EXIT</button>`; }
+                if(stuQs[currentQIdx].options && stuQs[currentQIdx].options.length > 0) {
+                    mZone.style.display = 'grid'; tZone.style.display = 'none'; mZone.innerHTML = '';
+                    stuQs[currentQIdx].options.forEach(opt => {
+                        let b = document.createElement('button'); b.className='btn-main'; b.innerText=opt; b.onclick=()=>check(opt); mZone.appendChild(b);
+                    });
+                } else { mZone.style.display = 'none'; tZone.style.display = 'flex'; document.getElementById('ans-input').value = ''; }
+            } else { document.getElementById('quiz-zone').innerHTML = `<h2>DONE</h2><h1>Final Score: ${finalCorrect}</h1><button class="btn-main" onclick="location.reload()">EXIT</button>`; }
         }
         function check(val) {
             let isCorrect = val.trim().toLowerCase() == stuQs[currentQIdx].a.trim().toLowerCase();
             conn.send({type:'score', name: stuName, correct: isCorrect});
-            if(isCorrect) { 
-                finalCorrect++; 
-                document.getElementById('main-card').style.backgroundColor = "rgba(255,204,0,0.1)";
-                setTimeout(()=>document.getElementById('main-card').style.backgroundColor = "var(--card)", 300);
-            }
+            if(isCorrect) { finalCorrect++; document.getElementById('main-card').style.backgroundColor = "rgba(255,204,0,0.1)"; setTimeout(()=>document.getElementById('main-card').style.backgroundColor = "var(--card)", 300); }
             currentQIdx++; setTimeout(nextQ, 500);
         }
+        function checkTyped() { check(document.getElementById('ans-input').value); }
     </script>
 </body>
 </html>
+
