@@ -10,34 +10,53 @@
         :root { --bg: #1a1a1a; --card: #252525; --red: #ff4757; --yellow: #ffcc00; --white: #ffffff; --green: #2ecc71; --orange: #ffa502; }
         
         body { background: var(--bg); color: var(--white); font-family: 'Outfit', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
-        .app-shell { background: var(--card); width: 95vw; max-width: 480px; height: 92vh; border: 4px solid var(--red); border-radius: 20px; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 0 50px rgba(255, 71, 87, 0.2); }
-        .header { background: var(--red); padding: 15px; text-align: center; border-bottom: 4px solid var(--yellow); flex-shrink: 0; }
-        .logo { font-family: 'Bungee'; font-size: 1.6rem; color: var(--yellow); text-shadow: 2px 2px 0px #000; margin: 0; }
+        
+        /* Tablet/Mobile Container */
+        .app-shell { 
+            background: var(--card); 
+            width: 95vw; 
+            max-width: 500px; 
+            height: 92vh; 
+            border: 4px solid var(--red); 
+            border-radius: 24px; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative; 
+            overflow: hidden; 
+            box-shadow: 0 0 50px rgba(255, 71, 87, 0.3); 
+        }
+
+        .header { background: var(--red); padding: 18px; text-align: center; border-bottom: 4px solid var(--yellow); flex-shrink: 0; }
+        .logo { font-family: 'Bungee'; font-size: 1.8rem; color: var(--yellow); text-shadow: 2px 2px 0px #000; margin: 0; }
         
         .view { display: none; flex: 1; padding: 20px; overflow-y: auto; flex-direction: column; gap: 12px; }
         .active { display: flex; }
+        .centered-content { justify-content: center; gap: 15px; }
 
-        button { font-family: 'Bungee'; border: none; padding: 15px; border-radius: 12px; font-size: 0.8rem; cursor: pointer; width: 100%; transition: 0.1s; flex-shrink: 0; }
+        button { font-family: 'Bungee'; border: none; padding: 15px; border-radius: 12px; font-size: 0.85rem; cursor: pointer; width: 100%; transition: transform 0.1s; flex-shrink: 0; }
+        button:active { transform: scale(0.98); }
+        
         .btn-yellow { background: var(--yellow); color: #000; }
         .btn-red { background: var(--red); color: #fff; }
-        .btn-ghost { background: transparent; border: 2px solid var(--yellow); color: var(--yellow); }
-        .btn-game { border: 2px solid #555; background: #333; color: white; margin-bottom: 5px; flex: 1; font-size: 0.6rem; padding: 10px 5px; }
+        .btn-ghost { background: transparent; border: 2px solid var(--yellow); color: var(--yellow); margin-top: auto; }
+        .btn-game { border: 2px solid #555; background: #333; color: white; padding: 10px; flex: 1; font-size: 0.65rem; }
         .btn-game.selected { border-color: var(--yellow); background: #444; color: var(--yellow); }
         .btn-del { width: auto; background: transparent; color: var(--red); font-size: 1.2rem; padding: 0 10px; }
 
         input { padding: 12px; background: #111; border: 2px solid #444; color: white; border-radius: 10px; width: calc(100% - 28px); font-family: 'Outfit'; }
-        .list-item { background: #333; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--yellow); margin-bottom: 8px; }
+        .list-item { background: #333; padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid var(--yellow); margin-bottom: 8px; }
         
-        .game-title { font-family: 'Bungee'; font-size: 1.4rem; text-align: center; }
-        .progress-track { background: #444; height: 10px; border-radius: 5px; overflow: hidden; margin: 10px 0; flex-shrink: 0; }
+        .game-title { font-family: 'Bungee'; font-size: 1.5rem; text-align: center; color: var(--white); }
+        .progress-track { background: #444; height: 12px; border-radius: 6px; overflow: hidden; margin: 10px 0; }
         .p-fill { height: 100%; background: var(--yellow); width: 0%; transition: 0.3s; }
         
-        .opt-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
-        .opt-btn { background: #333; color: white; border: 2px solid #555; text-align: left; font-family: 'Outfit'; font-weight: bold; padding: 12px; }
+        .opt-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .opt-btn { background: #333; color: white; border: 2px solid #555; text-align: left; font-family: 'Outfit'; font-weight: bold; padding: 15px; border-radius: 12px; }
 
-        .score-card { background: #111; padding: 10px; border-radius: 8px; display: flex; justify-content: space-between; margin-bottom: 5px; border-left: 4px solid var(--green); }
-        .editor-box { background: #1a1a1a; padding: 12px; border-radius: 10px; border: 1px solid #444; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+        .editor-box { background: #1a1a1a; padding: 15px; border-radius: 15px; border: 1px solid #444; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+        .score-card { background: #111; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; margin-bottom: 8px; border-left: 4px solid var(--green); }
 
+        /* Themes */
         .theme-solar { border-color: var(--orange) !important; }
         .theme-solar .p-fill { background: var(--orange); }
         .theme-power { border-color: var(--green) !important; }
@@ -49,11 +68,9 @@
 <div class="app-shell" id="main-shell">
     <div class="header"><h1 class="logo">QUIRIOSITY</h1></div>
 
-    <div id="view-home" class="view active">
-        <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:15px;">
-            <button class="btn-yellow" onclick="nav('view-join')">STUDENT LOGIN</button>
-            <button class="btn-red" onclick="nav('view-dash')">TEACHER DASHBOARD</button>
-        </div>
+    <div id="view-home" class="view active centered-content">
+        <button class="btn-yellow" onclick="nav('view-join')">STUDENT LOGIN</button>
+        <button class="btn-red" onclick="nav('view-dash')">TEACHER DASHBOARD</button>
     </div>
 
     <div id="view-dash" class="view">
@@ -61,9 +78,10 @@
         <div class="editor-box">
             <input type="text" id="new-cat" placeholder="Subject (e.g. STEM)">
             <input type="text" id="new-sub" placeholder="Topic (e.g. Physics)">
-            <button class="btn-yellow" style="padding:10px" onclick="addFolder()">+ CREATE NEW FOLDER</button>
+            <button class="btn-yellow" onclick="addFolder()">+ CREATE NEW FOLDER</button>
         </div>
-        <div id="folder-list" style="flex:1; overflow-y:auto; margin-top:10px;"></div>
+        <div id="folder-list" style="flex:1; overflow-y:auto; margin: 10px 0;"></div>
+        <button class="btn-red" style="background:#444; margin-bottom:10px; font-size:0.7rem;" onclick="resetToDefault()">RESTORE DEFAULT DATABASE</button>
         <button class="btn-ghost" onclick="nav('view-home')">BACK</button>
     </div>
 
@@ -80,12 +98,12 @@
             <input type="text" id="add-q" placeholder="New Question?">
             <input type="text" id="add-a" placeholder="Correct Answer">
             <input type="text" id="add-w" placeholder="Wrong Answers (comma separated)">
-            <button class="btn-yellow" style="padding:8px" onclick="addQuestion()">+ ADD TO LIST</button>
+            <button class="btn-yellow" onclick="addQuestion()">+ ADD TO LIST</button>
         </div>
 
-        <div id="q-list" style="flex:1; overflow-y: auto; font-size:0.75rem; border-top:1px solid #444; padding-top:10px;"></div>
+        <div id="q-list" style="flex:1; overflow-y: auto; font-size:0.8rem; border-top:1px solid #444; padding-top:10px;"></div>
         
-        <input type="number" id="host-code" placeholder="ROOM CODE (e.g. 123)">
+        <input type="number" id="host-code" placeholder="ENTER ROOM CODE">
         <button class="btn-red" onclick="launchGame()">LAUNCH LOBBY</button>
         <button class="btn-ghost" onclick="nav('view-dash')">BACK</button>
     </div>
@@ -94,20 +112,18 @@
         <h2 id="lobby-game-name" class="game-title">ARENA</h2>
         <h3 id="room-display" style="color:var(--yellow); text-align:center; margin:0;">ROOM: --</h3>
         <div style="display:flex; justify-content: space-around; background:#333; padding:15px; border-radius:15px; margin: 10px 0;">
-            <div style="text-align:center;"><div id="p-count" style="font-size:1.8rem; font-family:'Bungee';">0</div><small>JOINED</small></div>
-            <div style="text-align:center;"><div id="f-count" style="font-size:1.8rem; font-family:'Bungee'; color:var(--green);">0</div><small>DONE</small></div>
+            <div style="text-align:center;"><div id="p-count" style="font-size:2rem; font-family:'Bungee';">0</div><small>PLAYERS</small></div>
+            <div style="text-align:center;"><div id="f-count" style="font-size:2rem; font-family:'Bungee'; color:var(--green);">0</div><small>DONE</small></div>
         </div>
         <div id="live-results" style="flex:1; overflow-y:auto; background:#111; padding:10px; border-radius:10px; font-size:0.8rem;"></div>
         <button class="btn-red" onclick="signalStart()">START SESSION</button>
         <button class="btn-ghost" onclick="location.reload()">CANCEL</button>
     </div>
 
-    <div id="view-join" class="view">
-        <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:10px;">
-            <input type="text" id="stu-name" placeholder="YOUR NICKNAME">
-            <input type="number" id="stu-code" placeholder="ROOM CODE">
-            <button class="btn-yellow" onclick="joinGame()">ENTER GAME</button>
-        </div>
+    <div id="view-join" class="view centered-content">
+        <input type="text" id="stu-name" placeholder="YOUR NICKNAME">
+        <input type="number" id="stu-code" placeholder="ROOM CODE">
+        <button class="btn-yellow" onclick="joinGame()">ENTER GAME</button>
         <button class="btn-ghost" onclick="nav('view-home')">BACK</button>
     </div>
 
@@ -120,11 +136,10 @@
         </div>
     </div>
 
-    <div id="view-result" class="view" style="text-align:center; justify-content:center;">
+    <div id="view-result" class="view centered-content" style="text-align:center;">
         <h2 class="game-title" style="color:var(--yellow)">FINISHED!</h2>
         <div style="font-size:4rem; font-family:'Bungee';" id="final-score">0/0</div>
-        <p>Results submitted to teacher.</p>
-        <button class="btn-red" onclick="location.reload()">CLOSE</button>
+        <button class="btn-red" onclick="location.reload()">RETURN HOME</button>
     </div>
 </div>
 
@@ -318,7 +333,7 @@ const FULL_DB = {
     }
 };
 
-let db = JSON.parse(localStorage.getItem('quiriosity_db_final')) || FULL_DB;
+let db = JSON.parse(localStorage.getItem('quiriosity_master_db')) || FULL_DB;
 let peer, conn, connections = [], curSub = '', curCat = '', qIdx = 0, score = 0, activeQs = [];
 let manualGame = { name: 'PIZZA PARTY', theme: '' };
 let finishers = 0;
@@ -329,11 +344,21 @@ function nav(id) {
     if(id === 'view-dash') renderFolders();
 }
 
+// --- DB Control ---
+function save() { localStorage.setItem('quiriosity_master_db', JSON.stringify(db)); }
+
+function resetToDefault() {
+    if(confirm("Delete all custom folders and restore the 100+ original questions?")) {
+        db = JSON.parse(JSON.stringify(FULL_DB));
+        save(); renderFolders();
+    }
+}
+
 // --- Folder Management ---
 function addFolder() {
     const cat = document.getElementById('new-cat').value.trim();
     const sub = document.getElementById('new-sub').value.trim();
-    if(!cat || !sub) return alert("Please fill in both Subject and Topic!");
+    if(!cat || !sub) return alert("Fill Subject and Topic!");
     if(!db[cat]) db[cat] = {};
     if(!db[cat][sub]) db[cat][sub] = [];
     save(); renderFolders();
@@ -354,23 +379,19 @@ function renderFolders() {
     });
 }
 
-function delSub(cat, sub) { if(confirm(`Delete folder "${sub}"?`)) { delete db[cat][sub]; save(); renderFolders(); }}
+function delSub(cat, sub) { if(confirm(`Delete folder: ${sub}?`)) { delete db[cat][sub]; save(); renderFolders(); }}
 
 // --- Question Editor ---
 function openEditor(cat, sub) {
     curCat = cat; curSub = sub;
     document.getElementById('edit-title').innerText = sub;
-    refreshQList();
-    nav('view-edit');
+    refreshQList(); nav('view-edit');
 }
 
 function addQuestion() {
-    const q = document.getElementById('add-q').value;
-    const a = document.getElementById('add-a').value;
-    const wRaw = document.getElementById('add-w').value;
-    if(!q || !a || !wRaw) return alert("Please fill all question fields!");
-    const w = wRaw.split(',').map(s => s.trim());
-    db[curCat][curSub].push({ q, a, w });
+    const q = document.getElementById('add-q').value, a = document.getElementById('add-a').value, wRaw = document.getElementById('add-w').value;
+    if(!q || !a || !wRaw) return alert("Fill all fields!");
+    db[curCat][curSub].push({ q, a, w: wRaw.split(',').map(s => s.trim()) });
     save(); refreshQList();
     document.getElementById('add-q').value = ''; document.getElementById('add-a').value = ''; document.getElementById('add-w').value = '';
 }
@@ -394,13 +415,11 @@ function setManualGame(name, theme) {
     document.getElementById(id).classList.add('selected');
 }
 
-function save() { localStorage.setItem('quiriosity_db_final', JSON.stringify(db)); }
-
-// --- Game Logic ---
+// --- Multiplayer Logic ---
 function launchGame() {
     const code = document.getElementById('host-code').value;
-    if(!code) return alert("Please set a Room Code first!");
-    if(db[curCat][curSub].length === 0) return alert("This folder has no questions!");
+    if(!code) return alert("Enter Room Code!");
+    if(db[curCat][curSub].length === 0) return alert("Empty folder!");
     finishers = 0; connections = [];
     document.getElementById('live-results').innerHTML = '';
     peer = new Peer('q-' + code);
@@ -420,19 +439,15 @@ function launchGame() {
             }
         });
     });
-    peer.on('error', () => alert("Room Code taken or Connection Error."));
+    peer.on('error', () => alert("Code taken or error."));
 }
 
 function joinGame() {
-    const code = document.getElementById('stu-code').value;
-    const name = document.getElementById('stu-name').value || "Guest";
+    const code = document.getElementById('stu-code').value, name = document.getElementById('stu-name').value || "Guest";
     peer = new Peer();
     peer.on('open', () => {
         conn = peer.connect('q-' + code);
-        conn.on('open', () => {
-            nav('view-arena');
-            document.getElementById('q-text').innerText = "READY! Waiting for teacher...";
-        });
+        conn.on('open', () => { nav('view-arena'); document.getElementById('q-text').innerText = "READY! Waiting..."; });
         conn.on('data', data => {
             if(data.type === 'start') {
                 activeQs = data.qs;
@@ -448,9 +463,7 @@ function signalStart() {
     connections.forEach(c => c.send({type:'start', qs: db[curCat][curSub], game: manualGame}));
 }
 
-function startQuiz(userName) {
-    qIdx = 0; score = 0; showQ(userName);
-}
+function startQuiz(userName) { qIdx = 0; score = 0; showQ(userName); }
 
 function showQ(userName) {
     if(qIdx >= activeQs.length) {
@@ -463,12 +476,10 @@ function showQ(userName) {
     document.getElementById('q-text').innerText = q.q;
     document.getElementById('p-bar').style.width = (qIdx/activeQs.length)*100 + "%";
     const opts = [q.a, ...q.w].sort(() => Math.random() - 0.5);
-    const grid = document.getElementById('opt-grid');
-    grid.innerHTML = '';
+    const grid = document.getElementById('opt-grid'); grid.innerHTML = '';
     opts.forEach(o => {
         const btn = document.createElement('button');
-        btn.className = 'opt-btn';
-        btn.innerText = o;
+        btn.className = 'opt-btn'; btn.innerText = o;
         btn.onclick = () => { if(o === q.a) score++; qIdx++; showQ(userName); };
         grid.appendChild(btn);
     });
