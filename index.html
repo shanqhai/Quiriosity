@@ -3,261 +3,440 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiriosity | Research Master</title>
+    <title>Quiriosity</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;900&family=Bungee&display=swap');
-        :root { --bg: #2d0a0a; --card: #4a0e0e; --accent: #ffcc00; --red: #ff4757; --text: #ffffff; }
+        @import url('https://fonts.googleapis.com/css2?family=Bungee&family=Outfit:wght@400;700&display=swap');
+        :root { --bg: #1a1a1a; --card: #252525; --red: #ff4757; --yellow: #ffcc00; --white: #ffffff; --green: #2ecc71; --orange: #ffa502; }
         
-        body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
-        .card { background: var(--card); border-radius: 30px; padding: 25px; width: 90%; max-width: 450px; text-align: center; border: 4px solid var(--accent); box-shadow: 0 0 30px rgba(255, 204, 0, 0.2); max-height: 92vh; overflow-y: auto; position: relative; transition: 0.3s; }
+        body { background: var(--bg); color: var(--white); font-family: 'Outfit', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
+        .app-shell { background: var(--card); width: 100%; max-width: 500px; height: 95vh; border: 4px solid var(--red); border-radius: 20px; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 0 50px rgba(255, 71, 87, 0.2); }
+        .header { background: var(--red); padding: 15px; text-align: center; border-bottom: 4px solid var(--yellow); }
+        .logo { font-family: 'Bungee'; font-size: 1.8rem; color: var(--yellow); text-shadow: 2px 2px 0px #000; margin: 0; }
+        .view { display: none; flex: 1; padding: 20px; overflow-y: auto; flex-direction: column; gap: 12px; }
+        .active { display: flex; }
+
+        button { font-family: 'Bungee'; border: none; padding: 15px; border-radius: 12px; font-size: 0.8rem; cursor: pointer; width: 100%; transition: 0.1s; }
+        .btn-yellow { background: var(--yellow); color: #000; }
+        .btn-red { background: var(--red); color: #fff; }
+        .btn-ghost { background: transparent; border: 2px solid var(--yellow); color: var(--yellow); }
+        .btn-game { border: 2px solid #555; background: #333; color: white; margin-bottom: 5px; flex: 1; }
+        .btn-game.selected { border-color: var(--yellow); background: #444; color: var(--yellow); }
+        .btn-del { width: auto; background: transparent; color: var(--red); font-size: 1.2rem; padding: 0 10px; }
+
+        input { padding: 15px; background: #111; border: 2px solid #444; color: white; border-radius: 10px; width: calc(100% - 34px); }
+        .list-item { background: #333; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--yellow); }
         
-        .view { display: none; flex-direction: column; gap: 15px; }
-        .active { display: flex; animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .game-title { font-family: 'Bungee'; font-size: 1.5rem; text-align: center; }
+        .progress-track { background: #444; height: 10px; border-radius: 5px; overflow: hidden; margin: 10px 0; }
+        .p-fill { height: 100%; background: var(--yellow); width: 0%; transition: 0.3s; }
+        
+        .opt-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .opt-btn { background: #333; color: white; border: 2px solid #555; text-align: left; font-family: 'Outfit'; font-weight: bold; 
 
-        /* WARNINGS */
-        .error-shake { animation: shake 0.4s; border-color: var(--red) !important; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-        #alert-msg { color: var(--red); font-weight: bold; font-size: 0.8rem; display: none; margin-bottom: 10px; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 8px; }
 
-        .logo { font-family: 'Bungee'; color: var(--accent); font-size: 2.2rem; margin: 0; text-shadow: 2px 2px 0px #000; }
-        button { padding: 15px; border-radius: 15px; border: none; font-family: 'Bungee'; cursor: pointer; transition: 0.2s; font-size: 0.85rem; }
-        .btn-main { background: var(--accent); color: #2d0a0a; width: 100%; box-shadow: 0 4px 0 #b38f00; }
-        .btn-sec { background: rgba(255, 255, 255, 0.1); border: 1px solid var(--accent); color: white; width: 100%; }
-        .btn-del { color: var(--red); font-weight: bold; background: none; border: none; cursor: pointer; font-size: 1.1rem; }
+        .score-card { background: #111; padding: 10px; border-radius: 8px; display: flex; justify-content: space-between; margin-bottom: 5px; border-left: 4px solid var(--green); }
 
-        .progress-container { width: 100%; height: 8px; background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; }
-        #progress-fill { height: 100%; width: 0%; background: var(--accent); transition: 0.4s; }
-        .waiting-room { background: rgba(0,0,0,0.4); border-radius: 20px; padding: 15px; border: 1px dashed var(--accent); margin: 10px 0; }
-        .player-tag { background: var(--accent); color: #2d0a0a; padding: 5px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 900; margin: 4px; display: inline-block; }
-
-        /* GAME VISUALS */
-        #personal-status { height: 160px; display: flex; align-items: center; justify-content: center; position: relative; }
-        .sun { background: radial-gradient(circle, #fff, var(--accent), #ff8800); border-radius: 50%; transition: 0.5s; }
-        .bat-shell { width: 45px; height: 110px; border: 3px solid #fff; border-radius: 10px; position: relative; overflow: hidden; }
-        .bat-fill { background: var(--accent); width: 100%; position: absolute; bottom: 0; transition: height 0.7s; }
-        .pizza-plate { width: 120px; height: 120px; background: #f3e5ab; border: 6px solid #d2691e; border-radius: 50%; position: relative; }
-        .topping { position: absolute; font-size: 24px; }
-
-        input, select { padding: 12px; border-radius: 10px; border: 2px solid var(--accent); background: #000; color: #fff; text-align: center; width: calc(100% - 28px); }
-        .leaderboard { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.75rem; text-align: left; }
+        .theme-solar { border-color: var(--orange) !important; }
+        .theme-solar .p-fill { background: var(--orange); }
+        .theme-power { border-color: var(--green) !important; }
+        .theme-power .p-fill { background: var(--green); }
     </style>
 </head>
 <body>
 
-    <div class="card" id="main-card">
-        <h1 class="logo">QUIRIOSITY</h1>
-        <div id="alert-msg"></div>
+<div class="app-shell" id="main-shell">
+    <div class="header"><h1 class="logo">QUIRIOSITY</h1></div>
 
-        <div id="view-home" class="view active">
-            <button class="btn-main" onclick="showView('view-stu-login')">STUDENT JOIN</button>
-            <button class="btn-sec" onclick="showView('view-lib')" style="margin-top:10px">TEACHER DASHBOARD</button>
+    <div id="view-home" class="view active">
+        <button class="btn-yellow" onclick="nav('view-join')">STUDENT LOGIN</button>
+        <button class="btn-red" onclick="nav('view-dash')">TEACHER DASHBOARD</button>
+    </div>
+
+    <div id="view-dash" class="view">
+        <h2 style="color:var(--yellow); margin:0;">FOLDERS</h2>
+        <div id="folder-list"></div>
+        <button class="btn-ghost" onclick="nav('view-home')">BACK</button>
+    </div>
+
+    <div id="view-edit" class="view">
+        <h2 id="edit-title" style="color:var(--yellow); margin:0;"></h2>
+        <div style="font-size: 0.8rem; color:#888;">SELECT GAME MODE:</div>
+        <div style="display:flex; gap:5px;">
+            <button id="g-solar" class="btn-game" onclick="setManualGame('Solar Forge', 'theme-solar')">SOLAR FORGE</button>
+            <button id="g-power" class="btn-game" onclick="setManualGame('Power Cell', 'theme-power')">POWER CELL</button>
+            <button id="g-pizza" class="btn-game" onclick="setManualGame('Pizza Party', '')">PIZZA PARTY</button>
+        </div>
+        <div id="q-list" style="flex:1; overflow-y: auto; font-size:0.75rem; border-top:1px solid #444; padding-top:10px;"></div>
+        <input type="number" id="host-code" placeholder="ROOM CODE (e.g. 101)">
+        <button class="btn-red" onclick="launchGame()">LAUNCH LOBBY</button>
+        <button class="btn-ghost" onclick="nav('view-dash')">BACK</button>
+    </div>
+
+    <div id="view-lobby" class="view">
+        <h2 id="lobby-game-name" class="game-title">ARENA</h2>
+        <h3 id="room-display" style="color:var(--yellow); text-align:center;">ROOM: --</h3>
+        
+        <div style="display:flex; justify-content: space-around; background:#333; padding:15px; border-radius:15px;">
+            <div style="text-align:center;"><div id="p-count" style="font-size:2rem; font-family:'Bungee';">0</div><small>JOINED</small></div>
+            <div style="text-align:center;"><div id="f-count" style="font-size:2rem; font-family:'Bungee'; color:var(--green);">0</div><small>FINISHED</small></div>
         </div>
 
-        <div id="view-lib" class="view">
-            <div id="topics"></div>
-            <button class="btn-main" onclick="addTopic()">+ CREATE FOLDER</button>
-            <button class="btn-sec" onclick="disconnectAndHome()">BACK</button>
+        <div id="live-results" style="flex:1; overflow-y:auto; background:#111; padding:10px; border-radius:10px; margin-top:10px; font-size:0.8rem;">
+            <p style="text-align:center; color:#555;">Live Progress Feed...</p>
         </div>
 
-        <div id="view-edit" class="view">
-            <h3 id="edit-title" style="color:var(--accent); margin:0;">EDITOR</h3>
-            <div id="questions-list" style="max-height: 120px; overflow-y: auto; text-align: left; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px;"></div>
-            <button class="btn-sec" onclick="addHybridQuestion()">+ ADD QUESTION</button>
-            <select id="game-select"><option value="forge">☀️ FORGE</option><option value="battery">🔋 CELL</option><option value="pizza">🍕 PIZZA</option></select>
-            <input type="number" id="room-code" placeholder="ENTER ROOM CODE">
-            <button class="btn-main" onclick="hostGame()">LAUNCH ARENA</button>
-            <button class="btn-sec" onclick="showView('view-lib')">BACK</button>
-        </div>
+        <button class="btn-red" onclick="signalStart()">START SESSION</button>
+    </div>
 
-        <div id="view-stu-login" class="view">
-            <input type="text" id="stu-name" placeholder="NICKNAME">
-            <input type="number" id="join-code" placeholder="ROOM CODE">
-            <button class="btn-main" onclick="joinGame()">ENTER ROOM</button>
-            <button class="btn-sec" onclick="disconnectAndHome()">BACK</button>
-        </div>
+    <div id="view-join" class="view">
+        <input type="text" id="stu-name" placeholder="YOUR NICKNAME">
+        <input type="number" id="stu-code" placeholder="ROOM CODE">
+        <button class="btn-yellow" onclick="joinGame()">ENTER GAME</button>
+        <button class="btn-ghost" onclick="nav('view-home')">BACK</button>
+    </div>
 
-        <div id="view-arena" class="view">
-            <div class="progress-container"><div id="progress-fill"></div></div>
-            <div id="personal-status"></div>
-            <div id="teacher-lobby" style="display:none;">
-                <p id="player-count" style="font-size: 0.8rem;">0 Students</p>
-                <div class="waiting-room"><div id="host-lobby-grid"></div></div>
-                <button class="btn-main" onclick="teacherStart()">START SESSION</button>
-            </div>
-            <div id="quiz-zone" style="display:none;">
-                <p id="q-text" style="font-weight: 900;"></p>
-                <div id="mcq-zone" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
-                <div id="type-zone" style="display:none; flex-direction:column; gap:10px;">
-                    <input type="text" id="ans-input" placeholder="Type here..."><button class="btn-main" onclick="checkTyped()">SUBMIT</button>
-                </div>
-            </div>
-            <div id="teacher-results" style="display:none;">
-                <table class="leaderboard"><tbody id="leaderboard-body"></tbody></table>
-                <button class="btn-sec" onclick="disconnectAndHome()" style="margin-top:20px">CLOSE SESSION</button>
-            </div>
+    <div id="view-arena" class="view">
+        <div id="game-badge" class="game-title">...</div>
+        <div class="progress-track"><div id="p-bar" class="p-fill"></div></div>
+        <div id="q-area">
+            <h3 id="q-text" style="text-align:center; min-height:80px;">Waiting for teacher...</h3>
+            <div id="opt-grid" class="opt-grid"></div>
         </div>
     </div>
 
-    <script>
-        let peer, conn, myRole, currentTopic, roomCode, selectedMode;
-        let db = JSON.parse(localStorage.getItem('quiriosity_v12')) || {}; 
-        let players = {}; 
-        let playerCorrectCount = {};
+    <div id="view-result" class="view" style="text-align:center;">
+        <h2 class="game-title" style="color:var(--yellow)">FINISHED!</h2>
+        <div style="font-size:4rem; font-family:'Bungee';" id="final-score">0/0</div>
+        <p>Results submitted to teacher.</p>
+        <button class="btn-red" onclick="location.reload()">CLOSE</button>
+    </div>
+</div>
 
-        function showView(id) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if(id === 'view-lib') renderLib();
-            document.getElementById('alert-msg').style.display = 'none';
-        }
+<script>
+const FULL_DB = {
+    "Core Subjects": {
+        "Effective Communication": [
+            {q:"Analyzing a text: identifying purpose helps determine if author wants to:", a:"Persuade, inform, or instruct", w:["Grammar","Visual Aids","Bias"]},
+            {q:"Interpreting meaning: audience affects how the writer chooses:", a:"Word choice and level of formality", w:["Weather","Main idea","Deadline"]},
+            {q:"Technical texts often avoid figurative language to:", a:"Provide clear and accurate information", w:["Emotional impact","Share opinions","Entertain teachers"]},
+            {q:"Which of these is NOT an example of a verbal communication skill?", a:"Eye contact", w:["Speed of speech","Language used","Volume of speech"]},
+            {q:"Body language, facial expressions, and silence are examples of:", a:"Active listening", w:["Open listening","Pretend listening","Clarity listening"]},
+            {q:"One of the best ways to show customers you are listening is:", a:"Appropriate eye contact", w:["Talking to others","Frowning","Asking to repeat"]},
+            {q:"Exchanging messages between sender and receiver is:", a:"Communication", w:["Expression","Transmission","Interaction"]},
+            {q:"Main purpose of feedback?", a:"To indicate if the message was understood", w:["To confuse sender","To entertain","To deliver new message"]},
+            {q:"What is the nature of communication?", a:"It is dynamic and continuous", w:["Random","One-sided","Always uses words"]},
+            {q:"Which function allows people to build relationships?", a:"Social Interaction", w:["Motivation","Information","Control"]}
+        ],
+        "General Mathematics": [
+            {q:"Invest ₱1,000 and earn ₱50 interest. Total Maturity Value?", a:"₱1,050", w:["₱950","₱50","₱1,000"]},
+            {q:"In simple interest formula I = Prt, what does 'r' stand for?", a:"Rate", w:["Real money","Ratio","Remaining"]},
+            {q:"If you borrow money for 6 months, what value for 't' (years) is used?", a:"0.5", w:["6","1","12"]},
+            {q:"Interest calculated on both principal and previous interest:", a:"Compound Interest", w:["Simple","Half","Flat"]},
+            {q:"Person or institution that makes funds available is the:", a:"Lender", w:["Borrower","Debtor","Cashier"]},
+            {q:"In Logic, a simple statement that is either true or false is a:", a:"Proposition", w:["Question","Exclamation","Instruction"]},
+            {q:"Which logical connector uses the word 'AND'?", a:"Conjunction", w:["Disjunction","Negation","Implication"]},
+            {q:"If a statement P is True, what is its Negation (Not P)?", a:"False", w:["True","Maybe","Both"]},
+            {q:"What is the symbol for the logical connector 'OR'?", a:"∨", w:["∧","→","~"]},
+            {q:"Paying for an item in small monthly amounts is an:", a:"Installment", w:["Donation","Instant payment","Tax"]}
+        ],
+        "General Science": [
+            {q:"Which subsystem contains all the water on the planet?", a:"Hydrosphere", w:["Atmosphere","Geosphere","Biosphere"]},
+            {q:"What is the thin, outermost layer of the Earth?", a:"Crust", w:["Mantle","Outer Core","Inner Core"]},
+            {q:"Naturally occurring, inorganic solid with crystal structure:", a:"Mineral", w:["Rock","Fossil","Soil"]},
+            {q:"Rock formed from cooling of lava or magma:", a:"Igneous Rock", w:["Sedimentary","Metamorphic","Sandstone"]},
+            {q:"Process of rocks breaking down into smaller pieces:", a:"Weathering", w:["Erosion","Deposition","Compaction"]},
+            {q:"Which planet is known as the 'Blue Planet'?", a:"Earth", w:["Mars","Venus","Neptune"]},
+            {q:"What is the basic unit of life?", a:"Cell", w:["Atom","Tissue","Organ"]},
+            {q:"Organisms that eat plants or other animals are:", a:"Consumers", w:["Producers","Decomposers","Predators"]},
+            {q:"Process plants use to convert sunlight into energy:", a:"Photosynthesis", w:["Respiration","Digestion","Evaporation"]},
+            {q:"Gas produced by plants that humans breathe in:", a:"Oxygen", w:["Carbon Dioxide","Nitrogen","Helium"]}
+        ],
+        "Pag-aaral ng Kasaysayan at Lipunang Pilipino": [
+            {q:"Pag-aaral ng pinagmulan at estruktura ng lipunang Pilipino:", a:"Kasaysayan at Sosyolohiya", w:["Matematika","Siyensya","Dayuhang Pag-aaral"]},
+            {q:"Bayani na sumulat ng Noli Me Tangere:", a:"Jose Rizal", w:["Andres Bonifacio","Emilio Aguinaldo","Apolinario Mabini"]},
+            {q:"Layunin ng Pamahalaang Lokal:", a:"Maghatid ng serbisyo sa barangay", w:["Magtayo ng mall","Gumawa ng pera","Gulo"]},
+            {q:"Pagtutulungan nang walang hinihintay na kapalit:", a:"Bayanihan", w:["Mañana Habit","Crab Mentality","Ningas Kugon"]},
+            {q:"Pinakamaliit na yunit ng lipunan:", a:"Pamilya", w:["Paaralan","Simbahan","Pamahalaan"]},
+            {q:"Hunyo 12, 1898:", a:"Proklamasyon ng Kalayaan", w:["Hapon","Magellan","Martial Law"]},
+            {q:"Pagpapahalaga sa tulong na natanggap:", a:"Utang na Loob", w:["Pakikipagkapwa","Hiya","Amor Propio"]},
+            {q:"Sangay na gumagawa ng batas:", a:"Lehislatibo", w:["Ehekutibo","Hudisyal","Militar"]},
+            {q:"Wikang pambansa:", a:"Filipino", w:["Ingles","Kastila","Taglish"]},
+            {q:"Tradisyon na nagbubuklod sa grupo:", a:"Kultural na Pagkakakilanlan", w:["Pera","Damit","Bahay"]}
+        ],
+        "Life & Career Skills": [
+            {q:"Managing time effectively:", a:"Time Management", w:["Procrastination","Socializing","Multi-tasking"]},
+            {q:"Ability to adapt:", a:"Flexibility", w:["Rigidity","Stubbornness","Fixed Mindset"]},
+            {q:"Working for a common goal:", a:"Collaboration", w:["Competition","Individualism","Leadership"]},
+            {q:"First step in problem-solving:", a:"Identifying the problem", w:["Ignoring","Blaming","Asking"]},
+            {q:"Understanding others' feelings:", a:"Empathy", w:["Sympathy","Apathy","Criticism"]},
+            {q:"Being on time:", a:"Punctuality", w:["Loudness","Dressing","Finishing"]},
+            {q:"Main purpose of a Resume:", a:"Summarize skills", w:["Hobbies","Social media","ID"]},
+            {q:"Control feelings/weaknesses:", a:"Self-discipline", w:["Waiting","Avoiding","Leading"]},
+            {q:"SMART - 'A' stands for:", a:"Achievable", w:["Always","Active","Aggressive"]},
+            {q:"Active Listening key:", a:"Eye contact and nodding", w:["Lunch","Phone","Interrupting"]}
+        ]
+    },
+    "STEM Subjects": {
+        "General Physics 1": [
+            {q:"Rate of change of displacement vs time:", a:"Velocity", w:["Speed","Acceleration","Distance"]},
+            {q:"Tendency of object to resist motion change:", a:"Inertia", w:["Momentum","Force","Friction"]},
+            {q:"Product of mass and acceleration (F=ma):", a:"Force", w:["Power","Work","Energy"]},
+            {q:"Energy due to position or height:", a:"Potential Energy", w:["Kinetic","Thermal","Sound"]},
+            {q:"Force opposing relative motion of surfaces:", a:"Friction", w:["Gravity","Tension","Magnetic"]},
+            {q:"Acceleration of free-fall on Earth:", a:"9.8 m/s²", w:["3.0 m/s²","15 m/s²","1.0 m/s²"]},
+            {q:"Standard unit of energy and work:", a:"Joule", w:["Newton","Watt","Pascal"]},
+            {q:"Quantity with magnitude and direction:", a:"Vector", w:["Scalar","Constant","Integer"]},
+            {q:"If net force is zero, object is in:", a:"Equilibrium", w:["Motion","Acceleration","Freefall"]},
+            {q:"Rate at which work is done:", a:"Power", w:["Force","Momentum","Torque"]}
+        ],
+        "General Biology": [
+            {q:"Powerhouse of the cell:", a:"Mitochondria", w:["Ribosomes","Lysosomes","Golgi"]},
+            {q:"Jelly-like substance in cell:", a:"Cytoplasm", w:["Nucleus","Cell Wall","Vacuole"]},
+            {q:"Protein synthesis site:", a:"Ribosomes", w:["ER","Nucleolus","Chloroplast"]},
+            {q:"Plant organelle for photosynthesis:", a:"Chloroplast", w:["Vacuole","Mitochondria","Membrane"]},
+            {q:"Gatekeeper of the cell:", a:"Cell Membrane", w:["Cell Wall","Cytoskeleton","Envelope"]},
+            {q:"Eukaryotic cells feature:", a:"Have a nucleus", w:["Larger","Only DNA","Only membrane"]},
+            {q:"Control center containing DNA:", a:"Nucleus", w:["Nucleolus","Rough ER","Smooth ER"]},
+            {q:"Transport requiring energy:", a:"Active Transport", w:["Passive","Diffusion","Osmosis"]},
+            {q:"Cell division for growth:", a:"Mitosis", w:["Meiosis","Binary Fission","Fertilization"]},
+            {q:"'Suicide Bag' of the cell:", a:"Lysosome", w:["Peroxisome","Vacuole","Golgi"]}
+        ],
+        "General Chemistry": [
+            {q:"Smallest particle of an element:", a:"Atom", w:["Molecule","Compound","Proton"]},
+            {q:"Matter with definite shape:", a:"Solid", w:["Liquid","Gas","Plasma"]},
+            {q:"Horizontal rows in Periodic Table:", a:"Periods", w:["Groups","Families","Columns"]},
+            {q:"Chemical symbol for Gold:", a:"Au", w:["Ag","Gd","Go"]},
+            {q:"Negative subatomic particle:", a:"Electron", w:["Proton","Neutron","Nucleolus"]},
+            {q:"Bond where atoms share electrons:", a:"Covalent Bond", w:["Ionic","Metallic","Hydrogen"]},
+            {q:"Solution with pH of 2 is:", a:"Strongly Acidic", w:["Basic","Neutral","Weakly Basic"]},
+            {q:"Common name for H2O:", a:"Water", w:["Salt","Methane","Peroxide"]},
+            {q:"Matter cannot be created/destroyed:", a:"Law of Conservation of Mass", w:["Gravity","Definite","Avogadro"]},
+            {q:"Center of atom:", a:"Nucleus", w:["Shell","Orbit","Valance"]}
+        ],
+        "Earth & Space Science": [
+            {q:"Origin of the universe theory:", a:"Big Bang Theory", w:["Steady State","Nebular","Pulsating"]},
+            {q:"The 'Red Planet':", a:"Mars", w:["Jupiter","Venus","Saturn"]},
+            {q:"Our galaxy:", a:"Milky Way", w:["Andromeda","Sombrero","Whirlpool"]},
+            {q:"Closest star to Earth:", a:"The Sun", w:["Proxima Centauri","Sirius","Polaris"]},
+            {q:"Force keeping planets in orbit:", a:"Gravity", w:["Friction","Magnetism","Inertia"]},
+            {q:"Dust/gas cloud birth of stars:", a:"Nebula", w:["Black Hole","Supernova","Asteroid"]},
+            {q:"Layer containing Ozone:", a:"Stratosphere", w:["Troposphere","Mesosphere","Exosphere"]},
+            {q:"Moon between Earth and Sun:", a:"Solar Eclipse", w:["Lunar","Equinox","Solstice"]},
+            {q:"Ice/dust with 'tails':", a:"Comets", w:["Meteors","Asteroids","Satellites"]},
+            {q:"Earth revolution time:", a:"365.25 days", w:["24 hours","30 days","12 hours"]}
+        ]
+    },
+    "ICT & Business": {
+        "Computer Programming": [
+            {q:"Java is known for being:", a:"Platform-independent", w:["Dependent","Low-level","Hardware"]},
+            {q:"Java source extension:", a:".java", w:[".jav",".class",".exe"]},
+            {q:"Correct display output:", a:'System.out.println("Hello");', w:["print","echo","console.log"]},
+            {q:"Role of ICT in school:", a:"Improve efficiency", w:["Replace teachers","Limit","Fun"]},
+            {q:"Symbol to end statement:", a:";", w:[":",",","."]},
+            {q:"New line code:", a:'System.out.println("\\n");', w:["/n","\\t","nl"]},
+            {q:"Output of print('A'); println('B');:", a:"AB", w:["A B","A\\nB","Error"]},
+            {q:"Display Hello World:", a:'System.out.println("Hello World");', w:["print","log","write"]},
+            {q:"5 + 10 result:", a:'15', w:["510","50","Error"]},
+            {q:"1 + 2 + '3':", a:"33", w:["6","123","Error"]}
+        ],
+        "Bakery Operations": [
+            {q:"Leavening agent for bread:", a:"Yeast", w:["Baking powder","Salt","Sugar"]},
+            {q:"Bread internal temp:", a:"200–210°F", w:["180","190","220"]},
+            {q:"Tool for flour accuracy:", a:"Kitchen scale", w:["Cup","Spoon","Rolling pin"]},
+            {q:"Function of sugar:", a:"Sweetness and browning", w:["Leavening","Gluten","Moisture"]},
+            {q:"Strengthens structure:", a:"Flour", w:["Fat","Eggs","Water"]},
+            {q:"Storage temp (Room):", a:"20–25°C", w:["0-5","30-35","50-55"]},
+            {q:"Common fat in baking:", a:"Margarine", w:["Olive oil","Water","Honey"]},
+            {q:"Accurate measurement result:", a:"Consistent quality", w:["Faster rise","Less sugar","Sweeter"]},
+            {q:"Artisan bakery focus:", a:"Hand-made products", w:["Industrial","Home","Quick"]},
+            {q:"Ideal proofing environment:", a:"Warm and humid", w:["Cold/dry","Hot/dry","Ventilated"]}
+        ],
+        "Contemporary Literature": [
+            {q:"Genre written on phones:", a:"Text Tula", w:["Blog","Flash Fiction","Hyper-poetry"]},
+            {q:"Character of Flash Fiction:", a:"Extremely short story", w:["No ending","Long novel","Verse"]},
+            {q:"Combines book/video/web:", a:"Digi-Fiction", w:["Manga","Doodle Fiction","E-book"]},
+            {q:"Story via comic panels:", a:"Graphic Novel", w:["Text-talk","Hyper-poetry","Speculative"]},
+            {q:"Hyper-poetry navigation:", a:"Clicking digital links", w:["Turning pages","Audio","Movie"]},
+            {q:"Japanese comic style:", a:"Manga", w:["Manhwa","Graphic Novel","Digi-fiction"]},
+            {q:"'Blog' full name:", a:"Web Log", w:["Book","Best","Binary"]},
+            {q:"Future/magical worlds:", a:"Speculative Fiction", w:["Non-Fiction","Biography","Memoir"]},
+            {q:"Text-Talk Novel style:", a:"Chat logs", w:["Letters","Paragraphs","Sketches"]},
+            {q:"Creative Non-Fiction:", a:"True story/literary tech", w:["Fake story","Poem","Textbook"]}
+        ],
+        "Philippine Politics & Governance": [
+            {q:"Supreme law of PH:", a:"1987 Constitution", w:["Civil Code","Magna Carta","Bill of Rights"]},
+            {q:"Enforces laws:", a:"Executive Branch", w:["Legislative","Judicial","Military"]},
+            {q:"President's term:", a:"6 years", w:["4","8","10"]},
+            {q:"Congress composition:", a:"Senate and House", w:["Cabinet","Supreme Court","LGU"]},
+            {q:"Minimum voting age:", a:"18 years old", w:["15","21","16"]},
+            {q:"Reject a bill power:", a:"Veto", w:["Pardon","Impeachment","Appointment"]},
+            {q:"Commander-in-Chief:", a:"The President", w:["Defense Sec","Chief","Senate Pres"]},
+            {q:"Judicial role:", a:"Interpret laws", w:["Taxes","War","Treaties"]},
+            {q:"Smallest political unit:", a:"Barangay", w:["Municipality","Province","City"]},
+            {q:"Election commission:", a:"COMELEC", w:["Civil Service","COA","DOJ"]}
+        ],
+        "Basic Accounting": [
+            {q:"Accounting Equation:", a:"Assets = Liabilities + Equity", w:["A=L-E","R=E","A+L=E"]},
+            {q:"Resources owned:", a:"Assets", w:["Liabilities","Expenses","Revenues"]},
+            {q:"Financial position report:", a:"Balance Sheet", w:["Income Statement","Cash Flow","Journal"]},
+            {q:"Left side of account:", a:"Debit", w:["Credit","Balance","Equity"]},
+            {q:"Debts or obligations:", a:"Liabilities", w:["Assets","Capital","Income"]},
+            {q:"Chronological recording:", a:"Journalizing", w:["Posting","Summarizing","Auditing"]},
+            {q:"Providing services increases:", a:"Revenue", w:["Expense","Liability","Asset"]},
+            {q:"Original entry book:", a:"General Journal", w:["Ledger","Worksheet","Trial"]},
+            {q:"Assets=100k, Liab=40k, Equity?:", a:"60,000", w:["140k","100k","40k"]},
+            {q:"Goal of accounting:", a:"Decision-making info", w:["Hide money","Count staff","Ads"]}
+        ],
+        "Organization & Management": [
+            {q:"Four main functions:", a:"Planning, Organizing, Leading, Controlling", w:["Buy/Sell","Type/File","Hire/Fire"]},
+            {q:"Setting goals:", a:"Planning", w:["Controlling","Staffing","Budgeting"]},
+            {q:"SWOT - 'T' stands for:", a:"Threats", w:["Time","Team","Tasks"]},
+            {q:"Decision-making (no consult):", a:"Autocratic", w:["Democratic","Laissez-faire","Participative"]},
+            {q:"Top-level role:", a:"Long-term vision", w:["Daily supervision","Hiring","Repairs"]},
+            {q:"Chain of Command symbol:", a:"Solid vertical line", w:["Friendships","Salary","Exits"]},
+            {q:"Monitoring performance:", a:"Controlling", w:["Planning","Brainstorming","Marketing"]},
+            {q:"Recruiting employees:", a:"Staffing", w:["Leading","Accounting","Organizing"]},
+            {q:"'Hands-off' style:", a:"Laissez-faire", w:["Dictatorial","Democratic","Bureaucratic"]},
+            {q:"Company purpose summary:", a:"Mission Statement", w:["Salary list","Office map","Secret code"]}
+        ]
+    }
+};
 
-        // --- THE FIX: CLEAN UP OLD CONNECTIONS ---
-        function disconnectAndHome() {
-            if(peer) { peer.destroy(); }
-            location.reload(); // Hard refresh ensures PeerJS ID is released
-        }
+let db = JSON.parse(localStorage.getItem('quiriosity_db_final')) || FULL_DB;
+let peer, conn, connections = [], curSub = '', curCat = '', qIdx = 0, score = 0, activeQs = [];
+let manualGame = { name: 'PIZZA PARTY', theme: '' };
+let finishers = 0;
 
-        function triggerWarning(msg) {
-            const alert = document.getElementById('alert-msg');
-            alert.innerText = msg; alert.style.display = 'block';
-            document.getElementById('main-card').classList.add('error-shake');
-            setTimeout(() => document.getElementById('main-card').classList.remove('error-shake'), 400);
-        }
+function nav(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if(id === 'view-dash') renderFolders();
+}
 
-        /* DATA (Folder/Edit Always Here) */
-        function renderLib() {
-            const div = document.getElementById('topics'); div.innerHTML = '';
-            Object.keys(db).forEach(t => {
-                div.innerHTML += `<div style="display:flex; gap:5px; margin-bottom:8px;">
-                    <button class="btn-sec" onclick="openTopic('${t}')" style="flex:1; text-align:left;">📂 ${t}</button>
-                    <button class="btn-del" onclick="deleteTopic('${t}')">✕</button>
-                </div>`;
-            });
-        }
-        function addTopic() { let n = prompt("Folder Name?"); if(n){ db[n]=[]; save(); renderLib(); }}
-        function deleteTopic(t) { if(confirm("Delete Folder?")){ delete db[t]; save(); renderLib(); }}
-        function openTopic(t) { currentTopic = t; document.getElementById('edit-title').innerText = t; renderQuestions(); showView('view-edit'); }
-        function renderQuestions() {
-            const div = document.getElementById('questions-list'); div.innerHTML = '';
-            db[currentTopic].forEach((q, i) => { 
-                div.innerHTML += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #666; padding:5px;">
-                    <span>${i+1}. ${q.q}</span><button onclick="deleteQuestion(${i})" class="btn-del" style="font-size:0.8rem">✕</button>
-                </div>`; 
-            });
-        }
-        function deleteQuestion(i) { db[currentTopic].splice(i, 1); save(); renderQuestions(); }
-        function addHybridQuestion() {
-            let q = prompt("Question:"), a = prompt("Answer:"), w = prompt("Wrong (comma-separated). Empty for Typing:");
-            if(q && a){
-                let opts = (w && w.trim() !== "") ? w.split(',').concat(a).sort(() => Math.random() - 0.5) : [];
-                db[currentTopic].push({q, a, options: opts}); save(); renderQuestions();
+function renderFolders() {
+    const list = document.getElementById('folder-list'); list.innerHTML = '';
+    Object.keys(db).forEach(cat => {
+        Object.keys(db[cat]).forEach(sub => {
+            list.innerHTML += `<div class="list-item">
+                <span onclick="openEditor('${cat}','${sub}')">${sub}</span>
+                <button class="btn-del" onclick="delSub('${cat}','${sub}')">✕</button>
+            </div>`;
+        });
+    });
+}
+
+function delSub(cat, sub) { if(confirm(`Delete ${sub}?`)) { delete db[cat][sub]; save(); renderFolders(); }}
+
+function openEditor(cat, sub) {
+    curCat = cat; curSub = sub;
+    document.getElementById('edit-title').innerText = sub;
+    const ql = document.getElementById('q-list'); ql.innerHTML = '';
+    db[cat][sub].forEach((q, i) => { 
+        ql.innerHTML += `<div style="padding:5px; border-bottom:1px solid #444;">${i+1}. ${q.q} <span style="float:right; color:red; cursor:pointer;" onclick="delQ(${i})">✕</span></div>`; 
+    });
+    nav('view-edit');
+}
+
+function delQ(i) {
+    db[curCat][curSub].splice(i, 1);
+    save();
+    openEditor(curCat, curSub);
+}
+
+function setManualGame(name, theme) {
+    manualGame = { name, theme };
+    document.querySelectorAll('.btn-game').forEach(b => b.classList.remove('selected'));
+    if(name === 'Solar Forge') document.getElementById('g-solar').classList.add('selected');
+    if(name === 'Power Cell') document.getElementById('g-power').classList.add('selected');
+    if(name === 'Pizza Party') document.getElementById('g-pizza').classList.add('selected');
+}
+
+function save() { localStorage.setItem('quiriosity_db_final', JSON.stringify(db)); }
+
+function launchGame() {
+    const code = document.getElementById('host-code').value;
+    if(!code) return alert("Enter code");
+    finishers = 0;
+    document.getElementById('live-results').innerHTML = '';
+    peer = new Peer('q-' + code);
+    peer.on('open', () => {
+        nav('view-lobby');
+        document.getElementById('room-display').innerText = "ROOM CODE: " + code;
+        document.getElementById('lobby-game-name').innerText = manualGame.name + " LOBBY";
+    });
+    peer.on('connection', c => {
+        connections.push(c);
+        document.getElementById('p-count').innerText = connections.length;
+        
+        c.on('data', data => {
+            if(data.type === 'result') {
+                finishers++;
+                document.getElementById('f-count').innerText = finishers;
+                const list = document.getElementById('live-results');
+                list.innerHTML += `<div class="score-card"><span>${data.name}</span><strong>${data.score}/${data.total}</strong></div>`;
             }
-        }
-        function save() { localStorage.setItem('quiriosity_v12', JSON.stringify(db)); }
+        });
+    });
+}
 
-        /* HOST */
-        function hostGame() {
-            roomCode = document.getElementById('room-code').value;
-            if(!roomCode) return triggerWarning("NEED A ROOM CODE!");
-            selectedMode = document.getElementById('game-select').value;
-            
-            if(peer) peer.destroy();
-            peer = new Peer('q-' + roomCode);
-            
-            peer.on('open', () => { 
-                myRole='host'; showView('view-arena'); 
-                document.getElementById('teacher-lobby').style.display='block'; 
-            });
-            peer.on('error', (err) => {
-                if(err.type === 'unavailable-id') triggerWarning("CODE BUSY! TRY A NEW ONE.");
-            });
-            peer.on('connection', c => {
-                c.on('data', d => {
-                    if(d.type==='join'){ players[d.name]=0; playerCorrectCount[d.name]=0; updateLobby(); sync(); }
-                    if(d.type==='score'){
-                        if(d.correct) { players[d.name]++; playerCorrectCount[d.name]++; }
-                        else players[d.name] = Math.max(0, players[d.name]-1);
-                        updateLeaderboard(); sync();
-                    }
-                });
-            });
-        }
-
-        /* STUDENT */
-        function joinGame() {
-            let n = document.getElementById('stu-name').value, c = document.getElementById('join-code').value;
-            if(!n || !c) return triggerWarning("NAME & CODE REQUIRED!");
-            
-            if(peer) peer.destroy();
-            peer = new Peer();
-            
-            peer.on('open', () => {
-                conn = peer.connect('q-' + c);
-                conn.on('open', () => {
-                    myRole='student'; showView('view-arena');
-                    document.getElementById('q-text').innerText = "LINKED! WAIT FOR START...";
-                    conn.send({type:'join', name: n});
-                });
-                // If it can't connect within 4 seconds
-                setTimeout(() => { if(!conn || !conn.open) triggerWarning("ROOM NOT FOUND!"); }, 4000);
-                conn.on('data', d => {
-                    if(d.type==='start') startQuiz(d.questions, n);
-                    if(d.type==='sync') updateStudentFX(d.players[n], d.mode);
-                });
-            });
-        }
-
-        /* GAMEPLAY */
-        function updateLobby() {
-            const grid = document.getElementById('host-lobby-grid'), count = document.getElementById('player-count');
-            grid.innerHTML = ''; Object.keys(players).forEach(n => grid.innerHTML += `<span class="player-tag">${n}</span>`);
-            count.innerText = `${Object.keys(players).length} Students Joined`;
-        }
-        function teacherStart() {
-            document.getElementById('teacher-lobby').style.display='none'; document.getElementById('teacher-results').style.display='block';
-            Object.values(peer.connections).forEach(conns => conns.forEach(c => c.send({type:'start', questions: db[currentTopic]})));
-        }
-        function updateLeaderboard() {
-            const body = document.getElementById('leaderboard-body'); body.innerHTML = '';
-            let sorted = Object.keys(playerCorrectCount).sort((a,b) => playerCorrectCount[b] - playerCorrectCount[a]);
-            sorted.forEach((n, i) => body.innerHTML += `<tr><td>#${i+1}</td><td>${n}</td><td style="color:var(--accent); text-align:right;">${playerCorrectCount[n]}</td></tr>`);
-        }
-        function sync() { Object.values(peer.connections).forEach(conns => conns.forEach(c => c.send({type:'sync', players: players, mode: selectedMode}))); }
-        function updateStudentFX(score, mode) {
-            const box = document.getElementById('personal-status'); if(score === undefined) score = 0;
-            if(mode === 'forge') { let s = 60 + (score * 15); box.innerHTML = `<div class="sun" style="width:${s}px; height:${s}px;"></div>`; }
-            else if(mode === 'battery') { box.innerHTML = `<div class="bat-shell"><div class="bat-fill" style="height:${Math.min(score*10, 100)}%;"></div></div>`; }
-            else {
-                box.querySelector('.pizza-plate') || (box.innerHTML = `<div class="pizza-plate"></div>`);
-                const plate = box.querySelector('.pizza-plate');
-                if(plate.children.length < score) { let top = document.createElement('span'); top.className = 'topping'; top.innerText = '🍕'; top.style.left = Math.random()*85 + "px"; top.style.top = Math.random()*85 + "px"; plate.appendChild(top); }
+function joinGame() {
+    const code = document.getElementById('stu-code').value;
+    const name = document.getElementById('stu-name').value || "Guest";
+    peer = new Peer();
+    peer.on('open', () => {
+        conn = peer.connect('q-' + code);
+        conn.on('open', () => {
+            nav('view-arena');
+            document.getElementById('q-text').innerText = "CONNECTED! Waiting for start...";
+        });
+        conn.on('data', data => {
+            if(data.type === 'start') {
+                activeQs = data.qs;
+                document.getElementById('game-badge').innerText = data.game.name;
+                document.getElementById('main-shell').className = "app-shell " + data.game.theme;
+                startQuiz(name);
             }
-        }
-        let currentQIdx = 0, stuQs = [], stuName = "", finalCorrect = 0;
-        function startQuiz(qs, name) { stuQs = qs; stuName = name; currentQIdx = 0; finalCorrect = 0; document.getElementById('quiz-zone').style.display='block'; nextQ(); }
-        function nextQ() {
-            const mZone = document.getElementById('mcq-zone'), tZone = document.getElementById('type-zone');
-            document.getElementById('progress-fill').style.width = ((currentQIdx/stuQs.length)*100) + "%";
-            if(currentQIdx < stuQs.length) {
-                document.getElementById('q-text').innerText = stuQs[currentQIdx].q;
-                if(stuQs[currentQIdx].options && stuQs[currentQIdx].options.length > 0) {
-                    mZone.style.display = 'grid'; tZone.style.display = 'none'; mZone.innerHTML = '';
-                    stuQs[currentQIdx].options.forEach(opt => {
-                        let b = document.createElement('button'); b.className='btn-main'; b.innerText=opt; b.onclick=()=>check(opt); mZone.appendChild(b);
-                    });
-                } else { mZone.style.display = 'none'; tZone.style.display = 'flex'; document.getElementById('ans-input').value = ''; }
-            } else { document.getElementById('quiz-zone').innerHTML = `<h2>DONE</h2><h1>Score: ${finalCorrect}</h1><button class="btn-main" onclick="disconnectAndHome()">EXIT</button>`; }
-        }
-        function check(val) {
-            let isCorrect = val.trim().toLowerCase() == stuQs[currentQIdx].a.trim().toLowerCase();
-            conn.send({type:'score', name: stuName, correct: isCorrect});
-            if(isCorrect) { finalCorrect++; }
-            currentQIdx++; setTimeout(nextQ, 500);
-        }
-        function checkTyped() { check(document.getElementById('ans-input').value); }
-    </script>
+        });
+    });
+}
+
+function signalStart() {
+    connections.forEach(c => c.send({type:'start', qs: db[curCat][curSub], game: manualGame}));
+}
+
+function startQuiz(userName) {
+    qIdx = 0; score = 0;
+    showQ(userName);
+}
+
+function showQ(userName) {
+    if(qIdx >= activeQs.length) {
+        conn.send({type: 'result', name: userName, score: score, total: activeQs.length});
+        nav('view-result');
+        document.getElementById('final-score').innerText = `${score}/${activeQs.length}`;
+        return;
+    }
+    const q = activeQs[qIdx];
+    document.getElementById('q-text').innerText = q.q;
+    document.getElementById('p-bar').style.width = (qIdx/activeQs.length)*100 + "%";
+    
+    const opts = [q.a, ...q.w].sort(() => Math.random() - 0.5);
+    const grid = document.getElementById('opt-grid');
+    grid.innerHTML = '';
+    opts.forEach(o => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.innerText = o;
+        btn.onclick = () => {
+            if(o === q.a) score++;
+            qIdx++;
+            showQ(userName);
+        };
+        grid.appendChild(btn);
+    });
+}
+</script>
 </body>
 </html>
 
