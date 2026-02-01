@@ -10,32 +10,33 @@
         :root { --bg: #1a1a1a; --card: #252525; --red: #ff4757; --yellow: #ffcc00; --white: #ffffff; --green: #2ecc71; --orange: #ffa502; }
         
         body { background: var(--bg); color: var(--white); font-family: 'Outfit', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
-        .app-shell { background: var(--card); width: 100%; max-width: 500px; height: 95vh; border: 4px solid var(--red); border-radius: 20px; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 0 50px rgba(255, 71, 87, 0.2); }
-        .header { background: var(--red); padding: 15px; text-align: center; border-bottom: 4px solid var(--yellow); }
-        .logo { font-family: 'Bungee'; font-size: 1.8rem; color: var(--yellow); text-shadow: 2px 2px 0px #000; margin: 0; }
+        .app-shell { background: var(--card); width: 95vw; max-width: 480px; height: 92vh; border: 4px solid var(--red); border-radius: 20px; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 0 50px rgba(255, 71, 87, 0.2); }
+        .header { background: var(--red); padding: 15px; text-align: center; border-bottom: 4px solid var(--yellow); flex-shrink: 0; }
+        .logo { font-family: 'Bungee'; font-size: 1.6rem; color: var(--yellow); text-shadow: 2px 2px 0px #000; margin: 0; }
+        
         .view { display: none; flex: 1; padding: 20px; overflow-y: auto; flex-direction: column; gap: 12px; }
         .active { display: flex; }
 
-        button { font-family: 'Bungee'; border: none; padding: 15px; border-radius: 12px; font-size: 0.8rem; cursor: pointer; width: 100%; transition: 0.1s; }
+        button { font-family: 'Bungee'; border: none; padding: 15px; border-radius: 12px; font-size: 0.8rem; cursor: pointer; width: 100%; transition: 0.1s; flex-shrink: 0; }
         .btn-yellow { background: var(--yellow); color: #000; }
         .btn-red { background: var(--red); color: #fff; }
         .btn-ghost { background: transparent; border: 2px solid var(--yellow); color: var(--yellow); }
-        .btn-game { border: 2px solid #555; background: #333; color: white; margin-bottom: 5px; flex: 1; }
+        .btn-game { border: 2px solid #555; background: #333; color: white; margin-bottom: 5px; flex: 1; font-size: 0.6rem; padding: 10px 5px; }
         .btn-game.selected { border-color: var(--yellow); background: #444; color: var(--yellow); }
         .btn-del { width: auto; background: transparent; color: var(--red); font-size: 1.2rem; padding: 0 10px; }
 
-        input { padding: 15px; background: #111; border: 2px solid #444; color: white; border-radius: 10px; width: calc(100% - 34px); }
-        .list-item { background: #333; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--yellow); }
+        input { padding: 12px; background: #111; border: 2px solid #444; color: white; border-radius: 10px; width: calc(100% - 28px); font-family: 'Outfit'; }
+        .list-item { background: #333; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--yellow); margin-bottom: 8px; }
         
-        .game-title { font-family: 'Bungee'; font-size: 1.5rem; text-align: center; }
-        .progress-track { background: #444; height: 10px; border-radius: 5px; overflow: hidden; margin: 10px 0; }
+        .game-title { font-family: 'Bungee'; font-size: 1.4rem; text-align: center; }
+        .progress-track { background: #444; height: 10px; border-radius: 5px; overflow: hidden; margin: 10px 0; flex-shrink: 0; }
         .p-fill { height: 100%; background: var(--yellow); width: 0%; transition: 0.3s; }
         
-        .opt-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        .opt-btn { background: #333; color: white; border: 2px solid #555; text-align: left; font-family: 'Outfit'; font-weight: bold; 
-
+        .opt-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+        .opt-btn { background: #333; color: white; border: 2px solid #555; text-align: left; font-family: 'Outfit'; font-weight: bold; padding: 12px; }
 
         .score-card { background: #111; padding: 10px; border-radius: 8px; display: flex; justify-content: space-between; margin-bottom: 5px; border-left: 4px solid var(--green); }
+        .editor-box { background: #1a1a1a; padding: 12px; border-radius: 10px; border: 1px solid #444; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
 
         .theme-solar { border-color: var(--orange) !important; }
         .theme-solar .p-fill { background: var(--orange); }
@@ -49,63 +50,77 @@
     <div class="header"><h1 class="logo">QUIRIOSITY</h1></div>
 
     <div id="view-home" class="view active">
-        <button class="btn-yellow" onclick="nav('view-join')">STUDENT LOGIN</button>
-        <button class="btn-red" onclick="nav('view-dash')">TEACHER DASHBOARD</button>
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:15px;">
+            <button class="btn-yellow" onclick="nav('view-join')">STUDENT LOGIN</button>
+            <button class="btn-red" onclick="nav('view-dash')">TEACHER DASHBOARD</button>
+        </div>
     </div>
 
     <div id="view-dash" class="view">
-        <h2 style="color:var(--yellow); margin:0;">FOLDERS</h2>
-        <div id="folder-list"></div>
+        <h2 style="color:var(--yellow); margin:0; font-size:1.2rem;">FOLDERS</h2>
+        <div class="editor-box">
+            <input type="text" id="new-cat" placeholder="Subject (e.g. STEM)">
+            <input type="text" id="new-sub" placeholder="Topic (e.g. Physics)">
+            <button class="btn-yellow" style="padding:10px" onclick="addFolder()">+ CREATE NEW FOLDER</button>
+        </div>
+        <div id="folder-list" style="flex:1; overflow-y:auto; margin-top:10px;"></div>
         <button class="btn-ghost" onclick="nav('view-home')">BACK</button>
     </div>
 
     <div id="view-edit" class="view">
-        <h2 id="edit-title" style="color:var(--yellow); margin:0;"></h2>
-        <div style="font-size: 0.8rem; color:#888;">SELECT GAME MODE:</div>
+        <h2 id="edit-title" style="color:var(--yellow); margin:0; font-size:1.1rem;"></h2>
+        <div style="font-size: 0.7rem; color:#888;">SELECT GAME MODE:</div>
         <div style="display:flex; gap:5px;">
-            <button id="g-solar" class="btn-game" onclick="setManualGame('Solar Forge', 'theme-solar')">SOLAR FORGE</button>
-            <button id="g-power" class="btn-game" onclick="setManualGame('Power Cell', 'theme-power')">POWER CELL</button>
-            <button id="g-pizza" class="btn-game" onclick="setManualGame('Pizza Party', '')">PIZZA PARTY</button>
+            <button id="g-solar" class="btn-game" onclick="setManualGame('Solar Forge', 'theme-solar')">SOLAR</button>
+            <button id="g-power" class="btn-game" onclick="setManualGame('Power Cell', 'theme-power')">POWER</button>
+            <button id="g-pizza" class="btn-game selected" onclick="setManualGame('Pizza Party', '')">PIZZA</button>
         </div>
+        
+        <div class="editor-box">
+            <input type="text" id="add-q" placeholder="New Question?">
+            <input type="text" id="add-a" placeholder="Correct Answer">
+            <input type="text" id="add-w" placeholder="Wrong Answers (comma separated)">
+            <button class="btn-yellow" style="padding:8px" onclick="addQuestion()">+ ADD TO LIST</button>
+        </div>
+
         <div id="q-list" style="flex:1; overflow-y: auto; font-size:0.75rem; border-top:1px solid #444; padding-top:10px;"></div>
-        <input type="number" id="host-code" placeholder="ROOM CODE (e.g. 101)">
+        
+        <input type="number" id="host-code" placeholder="ROOM CODE (e.g. 123)">
         <button class="btn-red" onclick="launchGame()">LAUNCH LOBBY</button>
         <button class="btn-ghost" onclick="nav('view-dash')">BACK</button>
     </div>
 
     <div id="view-lobby" class="view">
         <h2 id="lobby-game-name" class="game-title">ARENA</h2>
-        <h3 id="room-display" style="color:var(--yellow); text-align:center;">ROOM: --</h3>
-        
-        <div style="display:flex; justify-content: space-around; background:#333; padding:15px; border-radius:15px;">
-            <div style="text-align:center;"><div id="p-count" style="font-size:2rem; font-family:'Bungee';">0</div><small>JOINED</small></div>
-            <div style="text-align:center;"><div id="f-count" style="font-size:2rem; font-family:'Bungee'; color:var(--green);">0</div><small>FINISHED</small></div>
+        <h3 id="room-display" style="color:var(--yellow); text-align:center; margin:0;">ROOM: --</h3>
+        <div style="display:flex; justify-content: space-around; background:#333; padding:15px; border-radius:15px; margin: 10px 0;">
+            <div style="text-align:center;"><div id="p-count" style="font-size:1.8rem; font-family:'Bungee';">0</div><small>JOINED</small></div>
+            <div style="text-align:center;"><div id="f-count" style="font-size:1.8rem; font-family:'Bungee'; color:var(--green);">0</div><small>DONE</small></div>
         </div>
-
-        <div id="live-results" style="flex:1; overflow-y:auto; background:#111; padding:10px; border-radius:10px; margin-top:10px; font-size:0.8rem;">
-            <p style="text-align:center; color:#555;">Live Progress Feed...</p>
-        </div>
-
+        <div id="live-results" style="flex:1; overflow-y:auto; background:#111; padding:10px; border-radius:10px; font-size:0.8rem;"></div>
         <button class="btn-red" onclick="signalStart()">START SESSION</button>
+        <button class="btn-ghost" onclick="location.reload()">CANCEL</button>
     </div>
 
     <div id="view-join" class="view">
-        <input type="text" id="stu-name" placeholder="YOUR NICKNAME">
-        <input type="number" id="stu-code" placeholder="ROOM CODE">
-        <button class="btn-yellow" onclick="joinGame()">ENTER GAME</button>
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:10px;">
+            <input type="text" id="stu-name" placeholder="YOUR NICKNAME">
+            <input type="number" id="stu-code" placeholder="ROOM CODE">
+            <button class="btn-yellow" onclick="joinGame()">ENTER GAME</button>
+        </div>
         <button class="btn-ghost" onclick="nav('view-home')">BACK</button>
     </div>
 
     <div id="view-arena" class="view">
         <div id="game-badge" class="game-title">...</div>
         <div class="progress-track"><div id="p-bar" class="p-fill"></div></div>
-        <div id="q-area">
-            <h3 id="q-text" style="text-align:center; min-height:80px;">Waiting for teacher...</h3>
+        <div id="q-area" style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+            <h3 id="q-text" style="text-align:center; min-height:80px; font-size:1.1rem;">Waiting...</h3>
             <div id="opt-grid" class="opt-grid"></div>
         </div>
     </div>
 
-    <div id="view-result" class="view" style="text-align:center;">
+    <div id="view-result" class="view" style="text-align:center; justify-content:center;">
         <h2 class="game-title" style="color:var(--yellow)">FINISHED!</h2>
         <div style="font-size:4rem; font-family:'Bungee';" id="final-score">0/0</div>
         <p>Results submitted to teacher.</p>
@@ -264,7 +279,7 @@ const FULL_DB = {
             {q:"Text-Talk Novel style:", a:"Chat logs", w:["Letters","Paragraphs","Sketches"]},
             {q:"Creative Non-Fiction:", a:"True story/literary tech", w:["Fake story","Poem","Textbook"]}
         ],
-        "Philippine Politics & Governance": [
+        "Politics & Governance": [
             {q:"Supreme law of PH:", a:"1987 Constitution", w:["Civil Code","Magna Carta","Bill of Rights"]},
             {q:"Enforces laws:", a:"Executive Branch", w:["Legislative","Judicial","Military"]},
             {q:"President's term:", a:"6 years", w:["4","8","10"]},
@@ -314,70 +329,98 @@ function nav(id) {
     if(id === 'view-dash') renderFolders();
 }
 
+// --- Folder Management ---
+function addFolder() {
+    const cat = document.getElementById('new-cat').value.trim();
+    const sub = document.getElementById('new-sub').value.trim();
+    if(!cat || !sub) return alert("Please fill in both Subject and Topic!");
+    if(!db[cat]) db[cat] = {};
+    if(!db[cat][sub]) db[cat][sub] = [];
+    save(); renderFolders();
+    document.getElementById('new-sub').value = '';
+}
+
 function renderFolders() {
     const list = document.getElementById('folder-list'); list.innerHTML = '';
     Object.keys(db).forEach(cat => {
         Object.keys(db[cat]).forEach(sub => {
             list.innerHTML += `<div class="list-item">
-                <span onclick="openEditor('${cat}','${sub}')">${sub}</span>
+                <span onclick="openEditor('${cat}','${sub}')" style="cursor:pointer; flex:1;">
+                    <strong>${sub}</strong><br><small style="color:var(--yellow)">${cat}</small>
+                </span>
                 <button class="btn-del" onclick="delSub('${cat}','${sub}')">✕</button>
             </div>`;
         });
     });
 }
 
-function delSub(cat, sub) { if(confirm(`Delete ${sub}?`)) { delete db[cat][sub]; save(); renderFolders(); }}
+function delSub(cat, sub) { if(confirm(`Delete folder "${sub}"?`)) { delete db[cat][sub]; save(); renderFolders(); }}
 
+// --- Question Editor ---
 function openEditor(cat, sub) {
     curCat = cat; curSub = sub;
     document.getElementById('edit-title').innerText = sub;
-    const ql = document.getElementById('q-list'); ql.innerHTML = '';
-    db[cat][sub].forEach((q, i) => { 
-        ql.innerHTML += `<div style="padding:5px; border-bottom:1px solid #444;">${i+1}. ${q.q} <span style="float:right; color:red; cursor:pointer;" onclick="delQ(${i})">✕</span></div>`; 
-    });
+    refreshQList();
     nav('view-edit');
 }
 
-function delQ(i) {
-    db[curCat][curSub].splice(i, 1);
-    save();
-    openEditor(curCat, curSub);
+function addQuestion() {
+    const q = document.getElementById('add-q').value;
+    const a = document.getElementById('add-a').value;
+    const wRaw = document.getElementById('add-w').value;
+    if(!q || !a || !wRaw) return alert("Please fill all question fields!");
+    const w = wRaw.split(',').map(s => s.trim());
+    db[curCat][curSub].push({ q, a, w });
+    save(); refreshQList();
+    document.getElementById('add-q').value = ''; document.getElementById('add-a').value = ''; document.getElementById('add-w').value = '';
 }
+
+function refreshQList() {
+    const ql = document.getElementById('q-list'); ql.innerHTML = '';
+    db[curCat][curSub].forEach((q, i) => { 
+        ql.innerHTML += `<div style="padding:10px; border-bottom:1px solid #444; display:flex; justify-content:space-between; align-items:center;">
+            <span>${i+1}. ${q.q}</span>
+            <span style="color:var(--red); cursor:pointer; font-weight:bold; padding-left:10px;" onclick="delQ(${i})">✕</span>
+        </div>`; 
+    });
+}
+
+function delQ(i) { db[curCat][curSub].splice(i, 1); save(); refreshQList(); }
 
 function setManualGame(name, theme) {
     manualGame = { name, theme };
     document.querySelectorAll('.btn-game').forEach(b => b.classList.remove('selected'));
-    if(name === 'Solar Forge') document.getElementById('g-solar').classList.add('selected');
-    if(name === 'Power Cell') document.getElementById('g-power').classList.add('selected');
-    if(name === 'Pizza Party') document.getElementById('g-pizza').classList.add('selected');
+    const id = name === 'Solar Forge' ? 'g-solar' : name === 'Power Cell' ? 'g-power' : 'g-pizza';
+    document.getElementById(id).classList.add('selected');
 }
 
 function save() { localStorage.setItem('quiriosity_db_final', JSON.stringify(db)); }
 
+// --- Game Logic ---
 function launchGame() {
     const code = document.getElementById('host-code').value;
-    if(!code) return alert("Enter code");
-    finishers = 0;
+    if(!code) return alert("Please set a Room Code first!");
+    if(db[curCat][curSub].length === 0) return alert("This folder has no questions!");
+    finishers = 0; connections = [];
     document.getElementById('live-results').innerHTML = '';
     peer = new Peer('q-' + code);
     peer.on('open', () => {
         nav('view-lobby');
-        document.getElementById('room-display').innerText = "ROOM CODE: " + code;
-        document.getElementById('lobby-game-name').innerText = manualGame.name + " LOBBY";
+        document.getElementById('room-display').innerText = "ROOM: " + code;
+        document.getElementById('lobby-game-name').innerText = manualGame.name;
     });
     peer.on('connection', c => {
         connections.push(c);
         document.getElementById('p-count').innerText = connections.length;
-        
         c.on('data', data => {
             if(data.type === 'result') {
                 finishers++;
                 document.getElementById('f-count').innerText = finishers;
-                const list = document.getElementById('live-results');
-                list.innerHTML += `<div class="score-card"><span>${data.name}</span><strong>${data.score}/${data.total}</strong></div>`;
+                document.getElementById('live-results').innerHTML += `<div class="score-card"><span>${data.name}</span><strong>${data.score}/${data.total}</strong></div>`;
             }
         });
     });
+    peer.on('error', () => alert("Room Code taken or Connection Error."));
 }
 
 function joinGame() {
@@ -388,7 +431,7 @@ function joinGame() {
         conn = peer.connect('q-' + code);
         conn.on('open', () => {
             nav('view-arena');
-            document.getElementById('q-text').innerText = "CONNECTED! Waiting for start...";
+            document.getElementById('q-text').innerText = "READY! Waiting for teacher...";
         });
         conn.on('data', data => {
             if(data.type === 'start') {
@@ -406,8 +449,7 @@ function signalStart() {
 }
 
 function startQuiz(userName) {
-    qIdx = 0; score = 0;
-    showQ(userName);
+    qIdx = 0; score = 0; showQ(userName);
 }
 
 function showQ(userName) {
@@ -420,7 +462,6 @@ function showQ(userName) {
     const q = activeQs[qIdx];
     document.getElementById('q-text').innerText = q.q;
     document.getElementById('p-bar').style.width = (qIdx/activeQs.length)*100 + "%";
-    
     const opts = [q.a, ...q.w].sort(() => Math.random() - 0.5);
     const grid = document.getElementById('opt-grid');
     grid.innerHTML = '';
@@ -428,11 +469,7 @@ function showQ(userName) {
         const btn = document.createElement('button');
         btn.className = 'opt-btn';
         btn.innerText = o;
-        btn.onclick = () => {
-            if(o === q.a) score++;
-            qIdx++;
-            showQ(userName);
-        };
+        btn.onclick = () => { if(o === q.a) score++; qIdx++; showQ(userName); };
         grid.appendChild(btn);
     });
 }
